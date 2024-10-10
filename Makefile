@@ -19,7 +19,7 @@ CXX 					= g++
 CXXFLAGS				= -I$(INCLUDE_DIR)
 _CXXFLAGS_RELEASE		= -O2
 _CXXFLAGS_DEBUG 		= -g -DDEBUG
-PROGRAM_NAME 		 	= $(BUILD_DIR)/main
+PROGRAM_NAME 		 	= main
 TEST_SCRIPT 		 	= script.sh
 
 ########################################
