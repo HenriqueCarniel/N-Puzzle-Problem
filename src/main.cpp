@@ -1,82 +1,40 @@
 #include <iostream>
-#include <sstream>
-#include <string>
 #include <vector>
-#include "NPuzzle.h"
-
-enum SearchAlgorithm
-{
-    BFS, IDFS, ASTAR, IDASTAR, GBFS, UNKNOWN
-};
-
-SearchAlgorithm selectAlgorithm(const std::string& input)
-{
-    if (input == "-bfs") return BFS;
-    if (input == "-idfs") return IDFS;
-    if (input == "-astar") return ASTAR;
-    if (input == "-idastar") return IDASTAR;
-    if (input == "-gbfs") return GBFS;
-    return UNKNOWN;
-}
-
-std::vector<int> parseState(const std::string& state)
-{
-    std::vector<int> parsedState;
-    std::stringstream ss(state);
-    int value;
-
-    while (ss >> value)
-    {
-        parsedState.push_back(value);
-        if (ss.peek() == ' ') ss.ignore();
-    }
-
-    return parsedState;
-}
+#include "Node.h"
+#include "InputHandler.h"
+#include "ErrorCodes.h"
 
 int main(int argc, char* argv[])
 {
-    if (argc < 3)
+    if (argc < 2)
     {
-        std::cerr << "Use: ./main -<search_algorithm> <initial_states>" << std::endl;
-        return 1;
+        std::cerr << "Use: ./main -<search_algorithm> <initial_states> or ./main -<search_algorithm> < <input_file>" << std::endl;
+        return static_cast<int>(ErrorCode::INVALID_ARGUMENTS);
     }
 
-    SearchAlgorithm search_algorithm = selectAlgorithm(argv[1]);
-    if (search_algorithm == UNKNOWN)
+    SearchAlgorithm search_algorithm = InputHandler::selectAlgorithm(argv[1]);
+    if (search_algorithm == SearchAlgorithm::UNKNOWN) 
     {
         std::cerr << "Unknown algorithm." << std::endl;
-        return 1;
+        return static_cast<int>(ErrorCode::UNKNOWN_ALGORITHM);
     }
 
-    // Process the initial states
-    std::vector<std::vector<int>> initialStates;
-    std::string statesInput;
+    std::vector<std::vector<int>> initialStates = InputHandler::processInput(argc, argv);
 
-    // Concatenate remaining arguments into a single string
-    for (int i = 2; i < argc; ++i)
+    if (!initialStates.empty())
     {
-        statesInput += argv[i];
-        if (i < argc - 1)
-            statesInput += " ";
+        for (size_t i = 0; i < initialStates.size(); ++i)
+        {
+            std::cout << "State " << i + 1 << ":" << std::endl;
+            Node rootPuzzle = Node(initialStates[i]);
+            rootPuzzle.printState();
+            std::cout << std::endl;
+        }
     }
-
-    std::stringstream stateStream(statesInput);
-    std::string state;
-
-    while (std::getline(stateStream, state, ','))
+    else
     {
-        std::vector<int> parsedState = parseState(state);
-        initialStates.push_back(parsedState);
-    }
-
-    std::cout << "Chosen algorithm: " << argv[1] << std::endl;
-    for (size_t i = 0; i < initialStates.size(); ++i)
-    {
-        std::cout << "Initial state " << i + 1 << ": ";
-        for (int num : initialStates[i]) 
-            std::cout << num << " ";
-        std::cout << std::endl;
+        std::cerr << "No valid initial states provided." << std::endl;
+        return static_cast<int>(ErrorCode::NO_INITIAL_STATES);
     }
 
     return 0;
