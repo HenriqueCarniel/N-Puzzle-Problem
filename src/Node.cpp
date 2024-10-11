@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(const std::vector<int>& state, Node* parent, int cost, int depth, int lastBlankIndex)
+Node::Node(std::vector<int>& state, Node* parent, int cost, int depth, int lastBlankIndex)
     : state(state), parent(parent), cost(cost), depth(depth), lastBlankIndex(lastBlankIndex)
 {
     auto it = std::find(state.begin(), state.end(), 0);
@@ -8,7 +8,7 @@ Node::Node(const std::vector<int>& state, Node* parent, int cost, int depth, int
     sideLength = std::sqrt(state.size());
 }
 
-std::vector<Node> Node::generateChildren() const
+std::vector<Node> Node::generateChildren()
 {
     std::vector<Node> children;
     
@@ -25,7 +25,7 @@ std::vector<Node> Node::generateChildren() const
                 std::vector<int> newState = state;
                 std::swap(newState[blankIndex], newState[newIndex]);
 
-                //children.emplace_back(newState, this, cost + 1, depth + 1, newIndex);
+                children.emplace_back(newState, this, cost + 1, depth + 1, blankIndex);
             }
         }
     }
@@ -34,7 +34,7 @@ std::vector<Node> Node::generateChildren() const
 }
 
 // TODO: Maybe exists a better solution???
-bool Node::isGoalState() const
+bool Node::isGoalState()
 {
     for (size_t i = 0; i < state.size(); ++i)
         if (state[i] != (i + 1)) return false;
@@ -42,12 +42,12 @@ bool Node::isGoalState() const
 }
 
 // TODO
-int Node::calculateManhattanDistance() const
+int Node::calculateManhattanDistance()
 {
     return 0;
 }
 
-void Node::printState() const
+void Node::printState()
 {
     for (int i = 0; i < state.size(); ++i)
     {
@@ -58,21 +58,23 @@ void Node::printState() const
     std::cout << std::endl;
 }
 
-void Node::printInfo() const
+void Node::printInfo()
 {
     std::cout << "Node Information:" << std::endl;
 
-    printState(); // Chama a função existente para imprimir o estado
+    printState();
     std::cout << "Blank Index: " << blankIndex << std::endl;
     std::cout << "Last Blank Index: " << lastBlankIndex << std::endl;
     std::cout << "Cost: " << cost << std::endl;
     std::cout << "Depth: " << depth << std::endl;
 
-    // Se houver um pai, imprima informações sobre ele
-    if (parent != nullptr) {
+    if (parent != nullptr) 
+    {
         std::cout << "Parent Node Information:" << std::endl;
-        parent->printInfo(); // Chama recursivamente para imprimir informações do pai
-    } else {
+        parent->printInfo();
+    } 
+    else 
+    {
         std::cout << "No Parent Node." << std::endl;
     }
 }

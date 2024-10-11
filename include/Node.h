@@ -25,14 +25,14 @@ private:
         {0, 1}      // Right
     };
 
-    bool isGoalState() const;
-    int calculateManhattanDistance() const;
+    bool isGoalState();
+    int calculateManhattanDistance();
 
 public:
-    Node(const std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0, int lastBlankIndex = -1);
-    std::vector<Node> generateChildren() const;
-    void printState() const;
-    void printInfo() const;
+    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0, int lastBlankIndex = -1);
+    std::vector<Node> generateChildren();
+    void printState();
+    void printInfo();
 };
 
 #endif
