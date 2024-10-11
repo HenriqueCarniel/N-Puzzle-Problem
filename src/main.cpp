@@ -27,8 +27,15 @@ int main(int argc, char* argv[])
         {
             std::cout << "State " << i + 1 << ":" << std::endl;
             Node rootPuzzle = Node(initialStates[i]);
-            rootPuzzle.printState();
+            rootPuzzle.printInfo();
             std::cout << std::endl;
+
+            std::vector<Node> children = rootPuzzle.generateChildren();
+            for (size_t j = 0; j < children.size(); ++j) {
+                std::cout << "Child " << j + 1 << " of State " << i + 1 << ":" << std::endl;
+                children[j].printInfo();
+                std::cout << std::endl;
+            }
         }
     }
     else
