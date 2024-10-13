@@ -6,15 +6,18 @@ Node::Node(std::vector<int>& state, Node* parent, int cost, int depth, int lastB
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
     sideLength = std::sqrt(state.size());
+    
+    goalState.resize(state.size());
+    std::iota(goalState.begin(), goalState.end(), 0);
 }
 
 std::vector<Node> Node::generateChildren()
 {
     std::vector<Node> children;
     
-    for (int i = 0; i < DIRECTIONS.size(); ++i) {
-        int newRow = blankIndex / sideLength + DIRECTIONS[i].first;
-        int newCol = blankIndex % sideLength + DIRECTIONS[i].second;
+    for (const auto& direction : DIRECTIONS) {
+        int newRow = blankIndex / sideLength + direction.first;
+        int newCol = blankIndex % sideLength + direction.second;
 
         if (newRow >= 0 && newRow < sideLength && newCol >= 0 && newCol < sideLength)
         {
@@ -33,18 +36,30 @@ std::vector<Node> Node::generateChildren()
     return children;
 }
 
-// TODO: Maybe exists a better solution???
 bool Node::isGoalState()
 {
-    for (size_t i = 0; i < state.size(); ++i)
-        if (state[i] != (i + 1)) return false;
-    return true;
+    return state == goalState;
 }
 
-// TODO
 int Node::calculateManhattanDistance()
 {
-    return 0;
+    int distance = 0;
+    int N = state.size();
+
+    for (int i = 0; i < N; ++i)
+    {
+        if (state[i] != 0)
+        {
+            int goalRow = state[i] / sideLength;
+            int goalCol = state[i] % sideLength;
+            int currentRow = i / sideLength;
+            int currentCol = i % sideLength;
+
+            distance += std::abs(currentRow - goalRow) + std::abs(currentCol - goalCol);
+        }
+    }
+
+    return distance;
 }
 
 void Node::printState()

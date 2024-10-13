@@ -10,9 +10,11 @@ void printTest(std::vector<std::vector<int>> initialStates)
     {
         std::cout << "State " << i + 1 << ":" << std::endl;
         Node rootPuzzle = Node(initialStates[i]);
-        rootPuzzle.printInfo();
+        //rootPuzzle.printInfo();
+        rootPuzzle.printState();
         std::cout << std::endl;
 
+        /*
         std::vector<Node> children = rootPuzzle.generateChildren();
         for (size_t j = 0; j < children.size(); ++j)
         {
@@ -29,6 +31,7 @@ void printTest(std::vector<std::vector<int>> initialStates)
             }
         }
         break;
+        */
     }
 }
 
@@ -41,7 +44,7 @@ int main(int argc, char* argv[])
     }
 
     SearchAlgorithm search_algorithm = InputHandler::selectAlgorithm(argv[1]);
-    if (search_algorithm == SearchAlgorithm::UNKNOWN) 
+    if (search_algorithm == SearchAlgorithm::UNKNOWN)
     {
         std::cerr << "Unknown algorithm." << std::endl;
         return static_cast<int>(ErrorCode::UNKNOWN_ALGORITHM);

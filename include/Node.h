@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+#include <numeric> // std::iota
 
 class Node
 {
@@ -13,16 +14,18 @@ private:
     int sideLength;
 
     std::vector<int> state;
+    std::vector<int> goalState;
     Node* parent;
     int cost;
     int depth;
     int lastBlankIndex;
 
+    // Specification
     std::vector<std::pair<int, int>> DIRECTIONS = {
         {-1, 0},    // Up
-        {1, 0},     // Down
         {0, -1},    // Left
-        {0, 1}      // Right
+        {0, 1},     // Right
+        {1, 0}      // Down
     };
 
     bool isGoalState();
