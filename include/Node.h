@@ -18,7 +18,6 @@ private:
     Node* parent;
     int cost;
     int depth;
-    int lastBlankIndex;
 
     // Specification
     std::vector<std::pair<int, int>> DIRECTIONS = {
@@ -28,14 +27,17 @@ private:
         {1, 0}      // Down
     };
 
-    bool isGoalState();
-    int calculateManhattanDistance();
-
 public:
-    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0, int lastBlankIndex = -1);
-    std::vector<Node> generateChildren();
-    void printState();
-    void printInfo();
+    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
+    std::vector<Node*> generateChildren();
+    int calculateManhattanDistance() const;
+    bool isGoalState() const;
+
+    std::vector<int> getState() const;
+    Node* getParent() const;
+    
+    void printState() const;
+    void printPath() const;
 };
 
 #endif
