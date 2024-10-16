@@ -25,7 +25,10 @@ private:
 
     static void clearMetrics();
     static void setPathMetrics(Node* finalNode, bool needAverageValueHeuristic);
+
     static std::optional<Node*> bfsGraph(Node& initialNode);
+    static std::optional<Node*> depthLimitedSearch(Node* initialNode, int depthLimit);
+    static std::optional<Node*> iterativeDeepeningSearch(Node& initialNode);
 
 public:
     static void runAlgorithm(Node initialState, SearchAlgorithm type);

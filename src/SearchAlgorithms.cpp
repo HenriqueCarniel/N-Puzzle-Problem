@@ -80,7 +80,7 @@ void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
     }
     else if (type == SearchAlgorithm::IDFS)
     {
-        // TODO
+        response = SearchAlgorithms::iterativeDeepeningSearch(rootPuzzle);
         needAverageValueHeuristic = false;
     }
     else if (type == SearchAlgorithm::ASTAR)
@@ -131,6 +131,39 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
                 open.push_back(child);
             }
         }
+    }
+
+    return std::nullopt;
+}
+
+std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int depthLimit)
+{
+    if (initialNode->isGoalState())
+        return initialNode;
+
+    if (depthLimit > 0)
+    {
+        metrics.numExpandedNodes++;
+        for (Node* child: initialNode->generateChildren())
+        {
+            std::optional<Node*> solution = depthLimitedSearch(child, depthLimit - 1);
+            if (solution.has_value())
+                return solution;
+        }
+    }
+
+    return std::nullopt;
+}
+
+std::optional<Node*> SearchAlgorithms::iterativeDeepeningSearch(Node& initialNode)
+{
+    clearMetrics();
+
+    for (int depthLimit = 0; ; ++depthLimit)
+    {
+        std::optional<Node*> solution = depthLimitedSearch(&initialNode, depthLimit);
+        if (solution.has_value())
+            return solution;
     }
 
     return std::nullopt;
