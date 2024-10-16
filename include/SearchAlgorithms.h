@@ -29,6 +29,7 @@ private:
     static std::optional<Node*> bfsGraph(Node& initialNode);
     static std::optional<Node*> depthLimitedSearch(Node* initialNode, int depthLimit);
     static std::optional<Node*> iterativeDeepeningSearch(Node& initialNode);
+    static std::optional<Node *> SearchAlgorithms::AStarSearch(Node &initialNode);
 
 public:
     static void runAlgorithm(Node initialState, SearchAlgorithm type);

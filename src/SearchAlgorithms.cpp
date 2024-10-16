@@ -4,7 +4,7 @@ SearchMetrics SearchAlgorithms::metrics;
 
 struct NodeHash
 {
-    size_t operator()(const Node* node) const
+    size_t operator()(const Node *node) const
     {
         size_t hash = 0;
         for (int num : node->getState())
@@ -15,7 +15,7 @@ struct NodeHash
 
 struct NodeEqual
 {
-    bool operator()(const Node* a, const Node* b) const
+    bool operator()(const Node *a, const Node *b) const
     {
         return a->getState() == b->getState();
     }
@@ -26,14 +26,14 @@ void SearchAlgorithms::clearMetrics()
     metrics = SearchMetrics();
 }
 
-void SearchAlgorithms::setPathMetrics(Node* finalNode, bool needAverageValueHeuristic)
+void SearchAlgorithms::setPathMetrics(Node *finalNode, bool needAverageValueHeuristic)
 {
     if (finalNode == nullptr)
         return;
 
     int pathLength = 0;
     int sumHeuristcValue = 0;
-    Node* currentNode = finalNode;
+    Node *currentNode = finalNode;
 
     if (needAverageValueHeuristic)
     {
@@ -52,7 +52,7 @@ void SearchAlgorithms::setPathMetrics(Node* finalNode, bool needAverageValueHeur
             currentNode = currentNode->getParent();
         }
     }
-    
+
     metrics.optimalSolutionLength = pathLength;
     metrics.initialValueHeuristic = currentNode->calculateManhattanDistance();
     metrics.averageValueHeuristic = static_cast<float>(sumHeuristcValue) / pathLength;
@@ -61,15 +61,15 @@ void SearchAlgorithms::setPathMetrics(Node* finalNode, bool needAverageValueHeur
 void SearchAlgorithms::printMetrics()
 {
     std::cout << metrics.numExpandedNodes << ","
-        << metrics.optimalSolutionLength << ","
-        << metrics.time << ","
-        << metrics.averageValueHeuristic << ","
-        << metrics.initialValueHeuristic << std::endl;
+              << metrics.optimalSolutionLength << ","
+              << metrics.time << ","
+              << metrics.averageValueHeuristic << ","
+              << metrics.initialValueHeuristic << std::endl;
 }
 
 void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
 {
-    std::optional<Node*> response;
+    std::optional<Node *> response;
     bool needAverageValueHeuristic = true;
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -101,26 +101,26 @@ void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
         setPathMetrics(response.value(), needAverageValueHeuristic);
 }
 
-std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
+std::optional<Node *> SearchAlgorithms::bfsGraph(Node &initialNode)
 {
     clearMetrics();
 
     if (initialNode.isGoalState())
         return &initialNode;
 
-    std::deque<Node*> open;
+    std::deque<Node *> open;
     open.push_back(&initialNode);
 
-    std::unordered_set<Node*, NodeHash, NodeEqual> closed;
+    std::unordered_set<Node *, NodeHash, NodeEqual> closed;
     closed.insert(&initialNode);
 
     while (!open.empty())
     {
-        Node* currentNode = open.front();
+        Node *currentNode = open.front();
         open.pop_front();
         metrics.numExpandedNodes++;
 
-        for (Node* child: currentNode->generateChildren())
+        for (Node *child : currentNode->generateChildren())
         {
             if (child->isGoalState())
                 return child;
@@ -136,7 +136,7 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
     return std::nullopt;
 }
 
-std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int depthLimit)
+std::optional<Node *> SearchAlgorithms::depthLimitedSearch(Node *initialNode, int depthLimit)
 {
     if (initialNode->isGoalState())
         return initialNode;
@@ -144,9 +144,9 @@ std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int
     if (depthLimit > 0)
     {
         metrics.numExpandedNodes++;
-        for (Node* child: initialNode->generateChildren())
+        for (Node *child : initialNode->generateChildren())
         {
-            std::optional<Node*> solution = depthLimitedSearch(child, depthLimit - 1);
+            std::optional<Node *> solution = depthLimitedSearch(child, depthLimit - 1);
             if (solution.has_value())
                 return solution;
         }
@@ -155,16 +155,52 @@ std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int
     return std::nullopt;
 }
 
-std::optional<Node*> SearchAlgorithms::iterativeDeepeningSearch(Node& initialNode)
+std::optional<Node *> SearchAlgorithms::iterativeDeepeningSearch(Node &initialNode)
 {
     clearMetrics();
 
-    for (int depthLimit = 0; ; ++depthLimit)
+    for (int depthLimit = 0;; ++depthLimit)
     {
-        std::optional<Node*> solution = depthLimitedSearch(&initialNode, depthLimit);
+        std::optional<Node *> solution = depthLimitedSearch(&initialNode, depthLimit);
         if (solution.has_value())
             return solution;
     }
 
     return std::nullopt;
+}
+
+std::optional<Node *> SearchAlgorithms::AStarSearch(Node &initialNode)
+{
+    clearMetrics();
+
+    int h = initialNode.calculateManhattanDistance();
+    int g = 0;
+    int f = g + h;
+if (initialNode.isGoalState())
+        return &initialNode;
+
+    std::deque<Node *> open;
+    open.push_back(&initialNode);
+
+    std::unordered_set<Node *, NodeHash, NodeEqual> closed;
+    closed.insert(&initialNode);
+
+while(!open.empty()){
+    Node *currentNode = open.front();
+    open.pop_front();
+    metrics.numExpandedNodes++;
+
+    for (Node *child : currentNode->generateChildren())
+        {
+            if (child->isGoalState())
+                return child;
+
+            if (closed.find(child) == closed.end())
+            {
+                closed.insert(child);
+                open.push_back(child);
+            }
+        }
+}
+
 }
