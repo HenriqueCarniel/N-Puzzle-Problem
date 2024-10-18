@@ -8,6 +8,8 @@
 #include <functional>
 #include <chrono>
 #include <optional>
+#include <queue> 
+#include <vector>
 
 struct SearchMetrics
 {

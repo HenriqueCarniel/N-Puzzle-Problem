@@ -18,6 +18,7 @@ private:
     Node* parent;
     int cost;
     int depth;
+    
 
     // Specification
     std::vector<std::pair<int, int>> DIRECTIONS = {
@@ -28,7 +29,7 @@ private:
     };
 
 public:
-    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
+    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0, int f = 0);
     std::vector<Node*> generateChildren();
     int calculateManhattanDistance() const;
     bool isGoalState() const;
@@ -38,6 +39,13 @@ public:
     
     void printState() const;
     void printPath() const;
+    int f;
+};
+
+class myComparator 
+{ 
+public: 
+    int operator() (const Node& n1, const Node& n2);
 };
 
 #endif

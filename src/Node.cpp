@@ -1,7 +1,7 @@
 #include "Node.h"
 
-Node::Node(std::vector<int>& state, Node* parent, int cost, int depth)
-    : state(state), parent(parent), cost(cost), depth(depth)
+Node::Node(std::vector<int>& state, Node* parent, int cost, int depth, int f)
+    : state(state), parent(parent), cost(cost), depth(depth), f(f)
 {
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
@@ -28,7 +28,7 @@ std::vector<Node*> Node::generateChildren()
                 std::vector<int> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
 
-                children.emplace_back(new Node(newState, this, cost + 1, depth + 1));
+                children.emplace_back(new Node(newState, this, cost + 1, depth + 1, cost + 1 + calculateManhattanDistance()));
             }
         }
     }
@@ -90,3 +90,12 @@ void Node::printPath() const
     printState();
     std::cout << std::endl;
 }
+
+class myComparator 
+{ 
+public: 
+    int operator() (const Node& n1, const Node& n2) 
+    { 
+        return n1.f > n2.f; 
+    } 
+}; 

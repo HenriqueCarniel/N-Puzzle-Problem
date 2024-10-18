@@ -173,24 +173,21 @@ std::optional<Node *> SearchAlgorithms::AStarSearch(Node &initialNode)
 {
     clearMetrics();
 
-    int h = initialNode.calculateManhattanDistance();
-    int g = 0;
-    int f = g + h;
 if (initialNode.isGoalState())
         return &initialNode;
 
-    std::deque<Node *> open;
-    open.push_back(&initialNode);
+    std::priority_queue <Node, std::vector<Node>, myComparator> open;
+    open.push(initialNode);
 
     std::unordered_set<Node *, NodeHash, NodeEqual> closed;
     closed.insert(&initialNode);
 
 while(!open.empty()){
-    Node *currentNode = open.front();
-    open.pop_front();
+    Node currentNode = open.top();
+    open.pop();
     metrics.numExpandedNodes++;
 
-    for (Node *child : currentNode->generateChildren())
+    for (Node *child : currentNode.generateChildren())
         {
             if (child->isGoalState())
                 return child;
@@ -198,7 +195,8 @@ while(!open.empty()){
             if (closed.find(child) == closed.end())
             {
                 closed.insert(child);
-                open.push_back(child);
+                open.push(*child);
+                
             }
         }
 }
