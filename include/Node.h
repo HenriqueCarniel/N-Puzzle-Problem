@@ -10,6 +10,9 @@
 class Node
 {
 private:
+    static int idCounter;
+
+    int id;
     int blankIndex;
     int sideLength;
 
@@ -35,7 +38,9 @@ public:
 
     std::vector<int> getState() const;
     Node* getParent() const;
-    
+    int getDepth() const;
+    int getId() const;
+
     void printState() const;
     void printPath() const;
 };

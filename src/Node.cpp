@@ -1,7 +1,9 @@
 #include "Node.h"
 
+int Node::idCounter = 0;
+
 Node::Node(std::vector<int>& state, Node* parent, int cost, int depth)
-    : state(state), parent(parent), cost(cost), depth(depth)
+    : state(state), parent(parent), cost(cost), depth(depth), id(idCounter++)
 {
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
@@ -70,6 +72,16 @@ std::vector<int> Node::getState() const
 Node* Node::getParent() const
 {
     return parent;
+}
+
+int Node::getDepth() const
+{
+    return depth;
+}
+
+int Node::getId() const
+{
+    return id;
 }
 
 void Node::printState() const
