@@ -8,6 +8,8 @@ std::function<int(const std::vector<int>&, const int)> SearchAlgorithms::costFun
     [](const std::vector<int>&, const int) -> int { return 0; };
 std::function<int(const std::vector<int>&, const int)> SearchAlgorithms::costFunctionGBFS = 
     [](const std::vector<int>& state, const int) -> int { return Node(state).calculateManhattanDistance(); };
+std::function<int(const std::vector<int>&, const int)> SearchAlgorithms::costFunctionASTAR = 
+    [](const std::vector<int>& state, const int depth) -> int { return Node(state).calculateManhattanDistance() + depth; };
 
 void SearchAlgorithms::clearMetrics()
 {
@@ -73,7 +75,7 @@ void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
     }
     else if (type == SearchAlgorithm::ASTAR)
     {
-        // TODO
+        response = SearchAlgorithms::astar(rootPuzzle);
     }
     else if (type == SearchAlgorithm::IDASTAR)
     {
@@ -176,7 +178,7 @@ std::optional<Node*> SearchAlgorithms::iterativeDeepeningSearch(Node& initialNod
     return std::nullopt;
 }
 
-struct CompareNode
+struct CompareNodeGbfs
 {
     bool operator()(Node* const& n1, Node* const& n2)
     {
@@ -195,13 +197,9 @@ struct CompareNode
                 
                 return n1id < n2id;
             }
-            // 061742385
-            return n1g > n2g;
+            return n1g < n2g;
         }
         
-        //std::cout << "n1h: " << n1h << std::endl;
-        //std::cout << "n2h: " << n2h << std::endl << std::endl;
-
         return n1f > n2f;
     }
 };
@@ -210,7 +208,7 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
 {
     clearMetrics();
 
-    std::priority_queue<Node*, std::vector<Node*>, CompareNode> open;
+    std::priority_queue<Node*, std::vector<Node*>, CompareNodeGbfs> open;
     std::unordered_set<Node*, NodeHash, NodeEqual> closed;
 
     open.push(&initialNode);
@@ -219,7 +217,6 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
     {
         Node* currentNode = open.top();
         open.pop();
-        metrics.numExpandedNodes++;
 
         if (closed.find(currentNode) == closed.end())
         {
@@ -227,11 +224,65 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
             if (currentNode->isGoalState())
                 return currentNode;
 
+            metrics.numExpandedNodes++;
             for (Node* child: currentNode->generateChildren(costFunctionGBFS))
+                open.push(child);
+        }
+    }
+
+    return std::nullopt;
+}
+
+struct CompareNodeAstar
+{
+    bool operator()(Node* const& n1, Node* const& n2)
+    {
+        int n1f = n1->getCost();
+        int n2f = n2->getCost();
+
+        if (n1f == n2f)
+        {
+            int n1g = n1->calculateManhattanDistance();
+            int n2g = n2->calculateManhattanDistance();
+
+            if (n1g == n2g)
             {
-                if (closed.find(child) == closed.end())
-                    open.push(child);
+                int n1id = n1->getId();
+                int n2id = n2->getId();
+                
+                return n1id < n2id;
             }
+
+            return n1g > n2g;
+        }
+        
+        return n1f > n2f;
+    }
+};
+
+std::optional<Node*> SearchAlgorithms::astar(Node& initialNode)
+{
+    clearMetrics();
+
+    std::priority_queue<Node*, std::vector<Node*>, CompareNodeAstar> open;
+    std::unordered_set<Node*, NodeHash, NodeEqual> closed;
+
+    open.push(&initialNode);
+
+    while(!open.empty())
+    {
+        Node* currentNode = open.top();
+        open.pop();
+        
+        if (closed.find(currentNode) == closed.end())
+        {
+            closed.insert(currentNode);
+            if (currentNode->isGoalState())
+                return currentNode;
+
+            metrics.numExpandedNodes++;
+            for (Node* child: currentNode->generateChildren(costFunctionASTAR))
+                open.push(child);
         }
     }
 

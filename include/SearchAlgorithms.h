@@ -27,6 +27,7 @@ private:
     static std::function<int(const std::vector<int>&, const int)> costFunctionBFS;
     static std::function<int(const std::vector<int>&, const int)> costFunctionIDFS;
     static std::function<int(const std::vector<int>&, const int)> costFunctionGBFS;
+    static std::function<int(const std::vector<int>&, const int)> costFunctionASTAR;
 
     static void clearMetrics();
     static void setPathMetrics(Node* finalNode, bool needAverageValueHeuristic);
@@ -35,6 +36,7 @@ private:
     static std::optional<Node*> depthLimitedSearch(Node* initialNode, int depthLimit);
     static std::optional<Node*> iterativeDeepeningSearch(Node& initialNode);
     static std::optional<Node*> greedyBestFirstSearch(Node& initialNode);
+    static std::optional<Node*> astar(Node& initialNode);
 
 public:
     static void runAlgorithm(Node initialState, SearchAlgorithm type);
