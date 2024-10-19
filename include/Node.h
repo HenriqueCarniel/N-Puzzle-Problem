@@ -6,6 +6,7 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric> // std::iota
+#include <functional>
 
 class Node
 {
@@ -31,8 +32,8 @@ private:
     };
 
 public:
-    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
-    std::vector<Node*> generateChildren();
+    Node(const std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
+    std::vector<Node*> generateChildren(std::function<int(const std::vector<int>&, const int)> costFunction);
     int calculateManhattanDistance() const;
     bool isGoalState() const;
 
@@ -40,6 +41,7 @@ public:
     Node* getParent() const;
     int getDepth() const;
     int getId() const;
+    int getCost() const;
 
     void printState() const;
     void printPath() const;

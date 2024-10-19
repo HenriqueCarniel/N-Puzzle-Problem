@@ -2,6 +2,13 @@
 
 SearchMetrics SearchAlgorithms::metrics;
 
+std::function<int(const std::vector<int>&, const int)> SearchAlgorithms::costFunctionBFS = 
+    [](const std::vector<int>&, const int) -> int { return 0; };
+std::function<int(const std::vector<int>&, const int)> SearchAlgorithms::costFunctionIDFS = 
+    [](const std::vector<int>&, const int) -> int { return 0; };
+std::function<int(const std::vector<int>&, const int)> SearchAlgorithms::costFunctionGBFS = 
+    [](const std::vector<int>& state, const int) -> int { return Node(state).calculateManhattanDistance(); };
+
 void SearchAlgorithms::clearMetrics()
 {
     metrics = SearchMetrics();
@@ -120,7 +127,7 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
         open.pop_front();
         metrics.numExpandedNodes++;
 
-        for (Node* child: currentNode->generateChildren())
+        for (Node* child: currentNode->generateChildren(costFunctionBFS))
         {
             if (child->isGoalState())
                 return child;
@@ -144,7 +151,7 @@ std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int
     if (depthLimit > 0)
     {
         metrics.numExpandedNodes++;
-        for (Node* child: initialNode->generateChildren())
+        for (Node* child: initialNode->generateChildren(costFunctionIDFS))
         {
             std::optional<Node*> solution = depthLimitedSearch(child, depthLimit - 1);
             if (solution.has_value())
@@ -173,10 +180,10 @@ struct CompareNode
 {
     bool operator()(Node* const& n1, Node* const& n2)
     {
-        int n1h = n1->calculateManhattanDistance();
-        int n2h = n2->calculateManhattanDistance();
+        int n1f = n1->getCost();
+        int n2f = n2->getCost();
 
-        if (n1h == n2h)
+        if (n1f == n2f)
         {
             int n1g = n1->getDepth();
             int n2g = n2->getDepth();
@@ -185,7 +192,7 @@ struct CompareNode
             {
                 int n1id = n1->getId();
                 int n2id = n2->getId();
-
+                
                 return n1id < n2id;
             }
             // 061742385
@@ -195,7 +202,7 @@ struct CompareNode
         //std::cout << "n1h: " << n1h << std::endl;
         //std::cout << "n2h: " << n2h << std::endl << std::endl;
 
-        return n1h > n2h;
+        return n1f > n2f;
     }
 };
 
@@ -204,7 +211,7 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
     clearMetrics();
 
     std::priority_queue<Node*, std::vector<Node*>, CompareNode> open;
-    std::unordered_set<Node*> closed;
+    std::unordered_set<Node*, NodeHash, NodeEqual> closed;
 
     open.push(&initialNode);
 
@@ -220,7 +227,7 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
             if (currentNode->isGoalState())
                 return currentNode;
 
-            for (Node* child: currentNode->generateChildren())
+            for (Node* child: currentNode->generateChildren(costFunctionGBFS))
             {
                 if (closed.find(child) == closed.end())
                     open.push(child);

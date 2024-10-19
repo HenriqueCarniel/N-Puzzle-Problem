@@ -2,7 +2,7 @@
 
 int Node::idCounter = 0;
 
-Node::Node(std::vector<int>& state, Node* parent, int cost, int depth)
+Node::Node(const std::vector<int>& state, Node* parent, int cost, int depth)
     : state(state), parent(parent), cost(cost), depth(depth), id(idCounter++)
 {
     auto it = std::find(state.begin(), state.end(), 0);
@@ -13,11 +13,12 @@ Node::Node(std::vector<int>& state, Node* parent, int cost, int depth)
     std::iota(goalState.begin(), goalState.end(), 0);
 }
 
-std::vector<Node*> Node::generateChildren()
+std::vector<Node*> Node::generateChildren(std::function<int(const std::vector<int>&, const int)> costFunction)
 {
     std::vector<Node*> children;
     
-    for (const auto& direction : DIRECTIONS) {
+    for (const auto& direction : DIRECTIONS)
+    {
         int newRow = blankIndex / sideLength + direction.first;
         int newCol = blankIndex % sideLength + direction.second;
 
@@ -30,7 +31,7 @@ std::vector<Node*> Node::generateChildren()
                 std::vector<int> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
 
-                children.emplace_back(new Node(newState, this, cost + 1, depth + 1));
+                children.emplace_back(new Node(newState, this, costFunction(newState, depth + 1), depth + 1));
             }
         }
     }
@@ -82,6 +83,11 @@ int Node::getDepth() const
 int Node::getId() const
 {
     return id;
+}
+
+int Node::getCost() const
+{
+    return cost;
 }
 
 void Node::printState() const
