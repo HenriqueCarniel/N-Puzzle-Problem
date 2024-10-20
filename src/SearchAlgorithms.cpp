@@ -2,21 +2,23 @@
 
 SearchMetrics SearchAlgorithms::metrics;
 
-std::function<int(const std::vector<uint8_t>&, const int)> SearchAlgorithms::costFunctionBFS = 
-    [](const std::vector<uint8_t>&, const int) -> int { return 0; };
-std::function<int(const std::vector<uint8_t>&, const int)> SearchAlgorithms::costFunctionIDFS = 
-    [](const std::vector<uint8_t>&, const int) -> int { return 0; };
-std::function<int(const std::vector<uint8_t>&, const int)> SearchAlgorithms::costFunctionGBFS = 
-    [](const std::vector<uint8_t>& state, const int) -> int { return Node::calculateManhattanDistanceStatic(state); };
-std::function<int(const std::vector<uint8_t>&, const int)> SearchAlgorithms::costFunctionASTAR = 
-    [](const std::vector<uint8_t>& state, const int depth) -> int { return Node::calculateManhattanDistanceStatic(state) + depth; };
+std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionBFS = 
+    [](const std::array<uint8_t, 9>&, const int) -> int { return 0; };
+std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionIDFS = 
+    [](const std::array<uint8_t, 9>&, const int) -> int { return 0; };
+std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionGBFS = 
+    [](const std::array<uint8_t, 9>& state, const int) -> int { return Node::calculateManhattanDistanceStatic(state); };
+std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionASTAR = 
+    [](const std::array<uint8_t, 9>& state, const int depth) -> int { return Node::calculateManhattanDistanceStatic(state) + depth; };
 
 void SearchAlgorithms::clearMetrics()
 {
     metrics = SearchMetrics();
+    heuristicNumberCalls = 0;
+    averageValueHeuristic = 0;
 }
 
-void SearchAlgorithms::setPathMetrics(Node* finalNode, bool needAverageValueHeuristic)
+void SearchAlgorithms::setPathMetrics(Node* finalNode)
 {
     if (finalNode == nullptr)
         return;
@@ -25,27 +27,14 @@ void SearchAlgorithms::setPathMetrics(Node* finalNode, bool needAverageValueHeur
     int sumHeuristcValue = 0;
     Node* currentNode = finalNode;
 
-    if (needAverageValueHeuristic)
+    while (currentNode->getParent() != nullptr)
     {
-        while (currentNode->getParent() != nullptr)
-        {
-            pathLength++;
-            sumHeuristcValue += currentNode->calculateManhattanDistance();
-            currentNode = currentNode->getParent();
-        }
-    }
-    else
-    {
-        while (currentNode->getParent() != nullptr)
-        {
-            pathLength++;
-            currentNode = currentNode->getParent();
-        }
+        pathLength++;
+        currentNode = currentNode->getParent();
     }
     
     metrics.optimalSolutionLength = pathLength;
     metrics.initialValueHeuristic = currentNode->calculateManhattanDistance();
-    metrics.averageValueHeuristic = static_cast<float>(sumHeuristcValue) / pathLength;
 }
 
 void SearchAlgorithms::printMetrics()
@@ -53,25 +42,22 @@ void SearchAlgorithms::printMetrics()
     std::cout << metrics.numExpandedNodes << ","
         << metrics.optimalSolutionLength << ","
         << metrics.time << ","
-        << metrics.averageValueHeuristic << ","
+        << averageValueHeuristic / heuristicNumberCalls << ","
         << metrics.initialValueHeuristic << std::endl;
 }
 
 void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
 {
     std::optional<Node*> response;
-    bool needAverageValueHeuristic = true;
     auto start = std::chrono::high_resolution_clock::now();
 
     if (type == SearchAlgorithm::BFS)
     {
         response = SearchAlgorithms::bfsGraph(rootPuzzle);
-        needAverageValueHeuristic = false;
     }
     else if (type == SearchAlgorithm::IDFS)
     {
         response = SearchAlgorithms::iterativeDeepeningSearch(rootPuzzle);
-        needAverageValueHeuristic = false;
     }
     else if (type == SearchAlgorithm::ASTAR)
     {
@@ -89,7 +75,7 @@ void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
     auto end = std::chrono::high_resolution_clock::now();
     metrics.time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 100000.0;
     if (response.has_value())
-        setPathMetrics(response.value(), needAverageValueHeuristic);
+        setPathMetrics(response.value());
 }
 
 struct NodeHash
@@ -123,8 +109,6 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
 
     std::unordered_set<Node*, NodeHash, NodeEqual> closed;
     closed.insert(&initialNode);
-
-    closed.reserve(10000000);
 
     while (!open.empty())
     {

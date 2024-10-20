@@ -10,27 +10,27 @@
 #include <optional>
 #include <queue>
 
+extern int heuristicNumberCalls;
+extern double averageValueHeuristic;
+
 struct SearchMetrics
 {
     int numExpandedNodes = 0;
     int optimalSolutionLength = 0;
     double time = 0.0f;
-    double averageValueHeuristic = 0.0f;
     int initialValueHeuristic = 0;
 };
 
 class SearchAlgorithms
 {
 private:
-    static SearchMetrics metrics;
-
-    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionBFS;
-    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionIDFS;
-    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionGBFS;
-    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionASTAR;
+    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionBFS;
+    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionIDFS;
+    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionGBFS;
+    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionASTAR;
 
     static void clearMetrics();
-    static void setPathMetrics(Node* finalNode, bool needAverageValueHeuristic);
+    static void setPathMetrics(Node* finalNode);
 
     static std::optional<Node*> bfsGraph(Node& initialNode);
     static std::optional<Node*> depthLimitedSearch(Node* initialNode, int depthLimit);
@@ -39,6 +39,7 @@ private:
     static std::optional<Node*> astar(Node& initialNode);
 
 public:
+    static SearchMetrics metrics;
     static void runAlgorithm(Node initialState, SearchAlgorithm type);
     static void printMetrics();
 };

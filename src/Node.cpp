@@ -1,8 +1,8 @@
 #include "Node.h"
 
 uint Node::idCounter = 0;
-std::vector<uint8_t> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-uint8_t Node::sideLenght = 3;
+const std::array<uint8_t, 9> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+const uint8_t Node::sideLenght = 3;
 
 // Specification
 const std::array<std::pair<int8_t, int8_t>, 4> Node::DIRECTIONS = {
@@ -12,20 +12,14 @@ const std::array<std::pair<int8_t, int8_t>, 4> Node::DIRECTIONS = {
     std::make_pair(1, 0)    // Down
 };
 
-Node::Node(const std::vector<uint8_t>& state, Node* parent, int cost, int depth)
+Node::Node(const std::array<uint8_t, 9>& state, Node* parent, int cost, int depth)
     : state(state), parent(parent), cost(cost), depth(depth), id(idCounter++)
 {
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
 }
 
-void Node::initialize15puzzle()
-{
-    goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    sideLenght = 4;
-}
-
-std::vector<Node*> Node::generateChildren(std::function<int(const std::vector<uint8_t>&, const int)> costFunction)
+std::vector<Node*> Node::generateChildren(std::function<int(const std::array<uint8_t, 9>&, const int)> costFunction)
 {
     std::vector<Node*> children;
     
@@ -40,7 +34,7 @@ std::vector<Node*> Node::generateChildren(std::function<int(const std::vector<ui
             
             if (parent == nullptr || newIndex != parent->blankIndex)
             {
-                std::vector<uint8_t> newState(state);
+                std::array<uint8_t, 9> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
 
                 children.emplace_back(new Node(newState, this, costFunction(newState, depth + 1), depth + 1));
@@ -58,9 +52,15 @@ bool Node::isGoalState() const
 
 int Node::calculateManhattanDistance() const
 {
-    //if (!parent)
-    //   return calculateManhattanDistanceStatic(state);
+    heuristicNumberCalls += 1;
 
+    if (!parent)
+    {
+        int result = calculateManhattanDistanceStatic(state);
+        averageValueHeuristic += result;
+        return result;
+    }
+       
     int distance = 0;
     int N = state.size();
 
@@ -77,10 +77,12 @@ int Node::calculateManhattanDistance() const
         }
     }
 
+    averageValueHeuristic += distance;
+
     return distance;
 }
 
-int Node::calculateManhattanDistanceStatic(const std::vector<uint8_t>& state)
+int Node::calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state)
 {
     int distance = 0;
     int N = state.size();
@@ -101,7 +103,7 @@ int Node::calculateManhattanDistanceStatic(const std::vector<uint8_t>& state)
     return distance;
 }
 
-std::vector<uint8_t> Node::getState() const
+std::array<uint8_t, 9> Node::getState() const
 {
     return state;
 }
