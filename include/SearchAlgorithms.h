@@ -24,10 +24,10 @@ class SearchAlgorithms
 private:
     static SearchMetrics metrics;
 
-    static std::function<int(const std::vector<int>&, const int)> costFunctionBFS;
-    static std::function<int(const std::vector<int>&, const int)> costFunctionIDFS;
-    static std::function<int(const std::vector<int>&, const int)> costFunctionGBFS;
-    static std::function<int(const std::vector<int>&, const int)> costFunctionASTAR;
+    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionBFS;
+    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionIDFS;
+    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionGBFS;
+    static std::function<int(const std::vector<uint8_t>&, const int)> costFunctionASTAR;
 
     static void clearMetrics();
     static void setPathMetrics(Node* finalNode, bool needAverageValueHeuristic);

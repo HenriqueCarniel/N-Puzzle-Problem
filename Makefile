@@ -17,7 +17,7 @@ DEPS += $(shell find $(INCLUDE_DIR) -type f -name "*.h")
 ########################################
 CXX 					= g++
 CXXFLAGS				= -I$(INCLUDE_DIR)
-_CXXFLAGS_RELEASE		= -O2
+_CXXFLAGS_RELEASE		= -Ofast
 _CXXFLAGS_DEBUG 		= -g -DDEBUG
 PROGRAM_NAME 		 	= main
 TEST_SCRIPT 		 	= script.sh

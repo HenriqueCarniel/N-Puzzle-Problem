@@ -13,9 +13,9 @@ SearchAlgorithm InputHandler::selectAlgorithm(const std::string& input)
     return SearchAlgorithm::UNKNOWN;
 }
 
-std::vector<int> InputHandler::parseState(const std::string& state)
+std::vector<uint8_t> InputHandler::parseState(const std::string& state)
 {
-    std::vector<int> parsedState;
+    std::vector<uint8_t> parsedState;
     std::stringstream ss(state);
     int value;
 
@@ -28,23 +28,23 @@ std::vector<int> InputHandler::parseState(const std::string& state)
     return parsedState;
 }
 
-std::vector<std::vector<int>> InputHandler::readFromStdin()
+std::vector<std::vector<uint8_t>> InputHandler::readFromStdin()
 {
-    std::vector<std::vector<int>> states;
+    std::vector<std::vector<uint8_t>> states;
     std::string line;
 
     while (std::getline(std::cin, line))
     {
-        std::vector<int> parsedState = InputHandler::parseState(line);
+        std::vector<uint8_t> parsedState = InputHandler::parseState(line);
         states.push_back(parsedState);
     }
 
     return states;
 }
 
-std::vector<std::vector<int>> InputHandler::processInput(int argc, char* argv[])
+std::vector<std::vector<uint8_t>> InputHandler::processInput(int argc, char* argv[])
 {
-    std::vector<std::vector<int>> initialStates;
+    std::vector<std::vector<uint8_t>> initialStates;
 
     // If input is via stdin (redirected file)
     if (!isatty(fileno(stdin)))
@@ -66,7 +66,7 @@ std::vector<std::vector<int>> InputHandler::processInput(int argc, char* argv[])
     std::string state;
     while (std::getline(stateStream, state, ','))
     {
-        std::vector<int> parsedState = InputHandler::parseState(state);
+        std::vector<uint8_t> parsedState = InputHandler::parseState(state);
         initialStates.push_back(parsedState);
     }
 

@@ -20,15 +20,16 @@ int main(int argc, char* argv[])
         return static_cast<int>(ErrorCode::UNKNOWN_ALGORITHM);
     }
 
-    std::vector<std::vector<int>> initialStates = InputHandler::processInput(argc, argv);
+    std::vector<std::vector<uint8_t>> initialStates = InputHandler::processInput(argc, argv);
     if (!initialStates.empty())
     {
-        for (std::vector<int> initialState: initialStates)
+        for (std::vector<uint8_t> initialState: initialStates)
         {
             Node rootPuzzle(initialState);
 
             SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
             SearchAlgorithms::printMetrics();
+            //std::cout << "\nTamanho da classe Node: " << sizeof(Node) << " bytes\n";
         }
     }
     else

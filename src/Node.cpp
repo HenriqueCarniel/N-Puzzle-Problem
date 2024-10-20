@@ -1,34 +1,46 @@
 #include "Node.h"
 
-int Node::idCounter = 0;
+uint Node::idCounter = 0;
+std::vector<uint8_t> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+uint8_t Node::sideLenght = 3;
 
-Node::Node(const std::vector<int>& state, Node* parent, int cost, int depth)
+// Specification
+const std::array<std::pair<int8_t, int8_t>, 4> Node::DIRECTIONS = {
+    std::make_pair(-1, 0),  // Up
+    std::make_pair(0, -1),  // Left
+    std::make_pair(0, 1),   // Right
+    std::make_pair(1, 0)    // Down
+};
+
+Node::Node(const std::vector<uint8_t>& state, Node* parent, int cost, int depth)
     : state(state), parent(parent), cost(cost), depth(depth), id(idCounter++)
 {
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
-    sideLength = std::sqrt(state.size());
-    
-    goalState.resize(state.size());
-    std::iota(goalState.begin(), goalState.end(), 0);
 }
 
-std::vector<Node*> Node::generateChildren(std::function<int(const std::vector<int>&, const int)> costFunction)
+void Node::initialize15puzzle()
+{
+    goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    sideLenght = 4;
+}
+
+std::vector<Node*> Node::generateChildren(std::function<int(const std::vector<uint8_t>&, const int)> costFunction)
 {
     std::vector<Node*> children;
     
     for (const auto& direction : DIRECTIONS)
     {
-        int newRow = blankIndex / sideLength + direction.first;
-        int newCol = blankIndex % sideLength + direction.second;
+        int newRow = blankIndex / sideLenght + direction.first;
+        int newCol = blankIndex % sideLenght + direction.second;
 
-        if (newRow >= 0 && newRow < sideLength && newCol >= 0 && newCol < sideLength)
+        if (newRow >= 0 && newRow < sideLenght && newCol >= 0 && newCol < sideLenght)
         {
-            int newIndex = newRow * sideLength + newCol;
+            int newIndex = newRow * sideLenght + newCol;
             
             if (parent == nullptr || newIndex != parent->blankIndex)
             {
-                std::vector<int> newState(state);
+                std::vector<uint8_t> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
 
                 children.emplace_back(new Node(newState, this, costFunction(newState, depth + 1), depth + 1));
@@ -46,6 +58,9 @@ bool Node::isGoalState() const
 
 int Node::calculateManhattanDistance() const
 {
+    //if (!parent)
+    //   return calculateManhattanDistanceStatic(state);
+
     int distance = 0;
     int N = state.size();
 
@@ -53,10 +68,10 @@ int Node::calculateManhattanDistance() const
     {
         if (state[i] != 0)
         {
-            int goalRow = state[i] / sideLength;
-            int goalCol = state[i] % sideLength;
-            int currentRow = i / sideLength;
-            int currentCol = i % sideLength;
+            int goalRow = state[i] / sideLenght;
+            int goalCol = state[i] % sideLenght;
+            int currentRow = i / sideLenght;
+            int currentCol = i % sideLenght;
 
             distance += std::abs(currentRow - goalRow) + std::abs(currentCol - goalCol);
         }
@@ -65,7 +80,28 @@ int Node::calculateManhattanDistance() const
     return distance;
 }
 
-std::vector<int> Node::getState() const
+int Node::calculateManhattanDistanceStatic(const std::vector<uint8_t>& state)
+{
+    int distance = 0;
+    int N = state.size();
+
+    for (int i = 0; i < N; ++i)
+    {
+        if (state[i] != 0)
+        {
+            int goalRow = state[i] / sideLenght;
+            int goalCol = state[i] % sideLenght;
+            int currentRow = i / sideLenght;
+            int currentCol = i % sideLenght;
+
+            distance += std::abs(currentRow - goalRow) + std::abs(currentCol - goalCol);
+        }
+    }
+
+    return distance;
+}
+
+std::vector<uint8_t> Node::getState() const
 {
     return state;
 }
@@ -75,17 +111,17 @@ Node* Node::getParent() const
     return parent;
 }
 
-int Node::getDepth() const
+uint32_t Node::getDepth() const
 {
     return depth;
 }
 
-int Node::getId() const
+uint32_t Node::getId() const
 {
     return id;
 }
 
-int Node::getCost() const
+uint32_t Node::getCost() const
 {
     return cost;
 }
@@ -94,7 +130,7 @@ void Node::printState() const
 {
     for (int i = 0; i < state.size(); ++i)
     {
-        if (i % sideLength == 0 && i != 0)
+        if (i % sideLenght == 0 && i != 0)
             std::cout << std::endl;
         std::cout << state[i] << " ";
     }

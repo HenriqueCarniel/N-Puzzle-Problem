@@ -7,41 +7,37 @@
 #include <algorithm>
 #include <numeric> // std::iota
 #include <functional>
+#include <bitset>
 
 class Node
 {
 private:
-    static int idCounter;
+    const uint32_t id;
+    uint8_t blankIndex;
 
-    int id;
-    int blankIndex;
-    int sideLength;
-
-    std::vector<int> state;
-    std::vector<int> goalState;
+    std::vector<uint8_t> state;
     Node* parent;
-    int cost;
-    int depth;
+    uint32_t cost;
+    uint32_t depth;
 
-    // Specification
-    std::vector<std::pair<int, int>> DIRECTIONS = {
-        {-1, 0},    // Up
-        {0, -1},    // Left
-        {0, 1},     // Right
-        {1, 0}      // Down
-    };
-
+    static uint idCounter;
+    static uint8_t sideLenght;
+    static std::vector<uint8_t> goalState;
+    static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;
+    
 public:
-    Node(const std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
-    std::vector<Node*> generateChildren(std::function<int(const std::vector<int>&, const int)> costFunction);
+    Node(const std::vector<uint8_t>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
+    static void initialize15puzzle();
+    std::vector<Node*> generateChildren(std::function<int(const std::vector<uint8_t>&, const int)> costFunction);
     int calculateManhattanDistance() const;
+    static int calculateManhattanDistanceStatic(const std::vector<uint8_t>& state);
     bool isGoalState() const;
 
-    std::vector<int> getState() const;
+    std::vector<uint8_t> getState() const;
     Node* getParent() const;
-    int getDepth() const;
-    int getId() const;
-    int getCost() const;
+    uint32_t getDepth() const;
+    uint32_t getId() const;
+    uint32_t getCost() const;
 
     void printState() const;
     void printPath() const;
