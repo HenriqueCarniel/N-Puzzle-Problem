@@ -1,31 +1,30 @@
 ########################################
-#	DIRETÓRIOS E OUTROS CAMINHOS
+#   DIRETÓRIOS E OUTROS CAMINHOS
 ########################################
 SRC_DIR = src
 BUILD_DIR = build
 INCLUDE_DIR = include
 
 ########################################
-#			ARQUIVOS
+#   ARQUIVOS
 ########################################
 SRC = $(shell find $(SRC_DIR) -type f -name "*.cpp")
 OBJ = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRC:.cpp=.o))
 DEPS += $(shell find $(INCLUDE_DIR) -type f -name "*.h")
 
 ########################################
-#			CONFIGS
+#   CONFIGS
 ########################################
-CXX 					= g++
-CXXFLAGS				= -I$(INCLUDE_DIR)
-_CXXFLAGS_RELEASE		= -O2
-_CXXFLAGS_DEBUG 		= -g -DDEBUG
-PROGRAM_NAME 		 	= main
-TEST_SCRIPT 		 	= script.sh
+CXX = g++
+CXXFLAGS = -I$(INCLUDE_DIR)
+_CXXFLAGS_RELEASE = -Ofast
+_CXXFLAGS_DEBUG = -g -DDEBUG -pg # Ferramenta de profiling (gprof)
+PROGRAM_NAME = main
 
 ########################################
-#			REGRAS
+#   REGRAS
 ########################################
-.PHONY: all release debug clean build test
+.PHONY: all release debug clean build
 
 all: release
 

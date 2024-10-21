@@ -5,6 +5,9 @@
 #include "ErrorCodes.h"
 #include "SearchAlgorithms.h"
 
+int heuristicNumberCalls = 0;
+double averageValueHeuristic = 0.0f;
+
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -20,15 +23,19 @@ int main(int argc, char* argv[])
         return static_cast<int>(ErrorCode::UNKNOWN_ALGORITHM);
     }
 
-    std::vector<std::vector<int>> initialStates = InputHandler::processInput(argc, argv);
+    std::vector<std::vector<uint8_t>> initialStates = InputHandler::processInput(argc, argv);
     if (!initialStates.empty())
     {
-        for (std::vector<int> initialState: initialStates)
+        size_t puzzleSize = initialStates[0].size();
+        for (std::vector<uint8_t> initialState: initialStates)
         {
-            Node rootPuzzle(initialState);
+            std::array<uint8_t, 9> arrayState;
+            std::copy(initialState.begin(), initialState.end(), arrayState.begin());
+            Node rootPuzzle(arrayState);
 
             SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
             SearchAlgorithms::printMetrics();
+            //std::cout << "\nTamanho da classe Node: " << sizeof(Node) << " bytes\n";
         }
     }
     else

@@ -6,46 +6,47 @@
 #include <iostream>
 #include <algorithm>
 #include <numeric> // std::iota
+#include <functional>
+#include <bitset>
+
+extern int heuristicNumberCalls;
+extern double averageValueHeuristic;
 
 class Node
 {
 private:
-    int blankIndex;
-    int sideLength;
+    const uint32_t id;
+    uint8_t blankIndex;
 
-    std::vector<int> state;
-    std::vector<int> goalState;
+    std::array<uint8_t, 9> state;
     Node* parent;
-    int cost;
-    int depth;
+    uint32_t cost;
+    uint32_t depth;
+    uint8_t heuristicValue;
+
+    static uint idCounter;
+    static const uint8_t sideLenght;
+    static const std::array<uint8_t, 9> goalState;
+    static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;
     
-
-    // Specification
-    std::vector<std::pair<int, int>> DIRECTIONS = {
-        {-1, 0},    // Up
-        {0, -1},    // Left
-        {0, 1},     // Right
-        {1, 0}      // Down
-    };
-
 public:
-    Node(std::vector<int>& state, Node* parent = nullptr, int cost = 0, int depth = 0, int f = 0);
+    Node(const std::array<uint8_t, 9>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
+    static void initialize15puzzle();
     std::vector<Node*> generateChildren();
-    int calculateManhattanDistance() const;
+    void calculateManhattanDistance();
+    static int calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state);
     bool isGoalState() const;
 
-    std::vector<int> getState() const;
+    std::array<uint8_t, 9> getState() const;
     Node* getParent() const;
-    
+    uint32_t getDepth() const;
+    uint32_t getId() const;
+    uint8_t getHeuristicValue() const;
+    uint32_t getCost() const;
+    void setCost(int costValue);
+
     void printState() const;
     void printPath() const;
-    int f;
-};
-
-class myComparator 
-{ 
-public: 
-    int operator() (const Node& n1, const Node& n2);
 };
 
 #endif
