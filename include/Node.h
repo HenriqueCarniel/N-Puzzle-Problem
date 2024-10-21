@@ -22,6 +22,7 @@ private:
     Node* parent;
     uint32_t cost;
     uint32_t depth;
+    uint8_t heuristicValue;
 
     static uint idCounter;
     static const uint8_t sideLenght;

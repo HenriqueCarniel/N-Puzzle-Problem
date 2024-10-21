@@ -1,7 +1,7 @@
 #include "Node.h"
 
 uint Node::idCounter = 0;
-const std::array<uint8_t, 9> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+const std::array<uint8_t, 9> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8}; //9, 10, 11, 12, 13, 14, 15};
 const uint8_t Node::sideLenght = 3;
 
 // Specification
@@ -17,6 +17,9 @@ Node::Node(const std::array<uint8_t, 9>& state, Node* parent, int cost, int dept
 {
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
+    
+    heuristicNumberCalls += 1;
+    averageValueHeuristic += calculateManhattanDistanceStatic(state);
 }
 
 std::vector<Node*> Node::generateChildren(std::function<int(const std::array<uint8_t, 9>&, const int)> costFunction)
@@ -52,13 +55,9 @@ bool Node::isGoalState() const
 
 int Node::calculateManhattanDistance() const
 {
-    heuristicNumberCalls += 1;
-
     if (!parent)
     {
-        int result = calculateManhattanDistanceStatic(state);
-        averageValueHeuristic += result;
-        return result;
+        return calculateManhattanDistanceStatic(state);
     }
        
     int distance = 0;
@@ -76,9 +75,7 @@ int Node::calculateManhattanDistance() const
             distance += std::abs(currentRow - goalRow) + std::abs(currentCol - goalCol);
         }
     }
-
-    averageValueHeuristic += distance;
-
+    
     return distance;
 }
 

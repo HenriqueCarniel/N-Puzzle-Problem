@@ -18,16 +18,13 @@ DEPS += $(shell find $(INCLUDE_DIR) -type f -name "*.h")
 CXX = g++
 CXXFLAGS = -I$(INCLUDE_DIR)
 _CXXFLAGS_RELEASE = -Ofast
-_CXXFLAGS_DEBUG = -g -DDEBUG -pg  # Adicione -pg para profiling
-LDFLAGS = -pg  # Adicione -pg para o link
-
+_CXXFLAGS_DEBUG = -g -DDEBUG -pg # Ferramenta de profiling (gprof)
 PROGRAM_NAME = main
-TEST_SCRIPT = script.sh
 
 ########################################
 #   REGRAS
 ########################################
-.PHONY: all release debug clean build test
+.PHONY: all release debug clean build
 
 all: release
 
@@ -35,11 +32,10 @@ release: CXXFLAGS += $(_CXXFLAGS_RELEASE)
 release: build
 
 debug: CXXFLAGS += $(_CXXFLAGS_DEBUG)
-debug: LDFLAGS += -pg  # Garantir que o link também tenha -pg
 debug: build
 
 build: $(OBJ)
-	$(CXX) -o $(PROGRAM_NAME) $^ $(CXXFLAGS) $(LDFLAGS)
+	$(CXX) -o $(PROGRAM_NAME) $^ $(CXXFLAGS)
 
 clean:
 	rm -f $(PROGRAM_NAME)

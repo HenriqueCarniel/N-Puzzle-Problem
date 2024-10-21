@@ -73,7 +73,7 @@ void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
     }
 
     auto end = std::chrono::high_resolution_clock::now();
-    metrics.time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 100000.0;
+    metrics.time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000000.0;
     if (response.has_value())
         setPathMetrics(response.value());
 }
