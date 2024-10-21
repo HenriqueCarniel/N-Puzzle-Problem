@@ -24,11 +24,6 @@ struct SearchMetrics
 class SearchAlgorithms
 {
 private:
-    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionBFS;
-    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionIDFS;
-    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionGBFS;
-    static std::function<int(const std::array<uint8_t, 9>&, const int)> costFunctionASTAR;
-
     static void clearMetrics();
     static void setPathMetrics(Node* finalNode);
 

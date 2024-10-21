@@ -17,12 +17,9 @@ Node::Node(const std::array<uint8_t, 9>& state, Node* parent, int cost, int dept
 {
     auto it = std::find(state.begin(), state.end(), 0);
     blankIndex = std::distance(state.begin(), it);
-    
-    heuristicNumberCalls += 1;
-    averageValueHeuristic += calculateManhattanDistanceStatic(state);
 }
 
-std::vector<Node*> Node::generateChildren(std::function<int(const std::array<uint8_t, 9>&, const int)> costFunction)
+std::vector<Node*> Node::generateChildren()
 {
     std::vector<Node*> children;
     
@@ -40,7 +37,7 @@ std::vector<Node*> Node::generateChildren(std::function<int(const std::array<uin
                 std::array<uint8_t, 9> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
 
-                children.emplace_back(new Node(newState, this, costFunction(newState, depth + 1), depth + 1));
+                children.emplace_back(new Node(newState, this, 0, depth + 1));
             }
         }
     }
@@ -53,11 +50,11 @@ bool Node::isGoalState() const
     return state == goalState;
 }
 
-int Node::calculateManhattanDistance() const
+void Node::calculateManhattanDistance()
 {
     if (!parent)
     {
-        return calculateManhattanDistanceStatic(state);
+        heuristicValue = calculateManhattanDistanceStatic(state);
     }
        
     int distance = 0;
@@ -75,8 +72,11 @@ int Node::calculateManhattanDistance() const
             distance += std::abs(currentRow - goalRow) + std::abs(currentCol - goalCol);
         }
     }
-    
-    return distance;
+
+    heuristicValue = distance;
+
+    heuristicNumberCalls += 1;
+    averageValueHeuristic += heuristicValue;
 }
 
 int Node::calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state)
@@ -120,9 +120,19 @@ uint32_t Node::getId() const
     return id;
 }
 
+uint8_t Node::getHeuristicValue() const
+{
+    return heuristicValue;
+}
+
 uint32_t Node::getCost() const
 {
     return cost;
+}
+
+void Node::setCost(int costValue)
+{
+    cost = costValue;
 }
 
 void Node::printState() const

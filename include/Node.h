@@ -32,8 +32,8 @@ private:
 public:
     Node(const std::array<uint8_t, 9>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
     static void initialize15puzzle();
-    std::vector<Node*> generateChildren(std::function<int(const std::array<uint8_t, 9>&, const int)> costFunction);
-    int calculateManhattanDistance() const;
+    std::vector<Node*> generateChildren();
+    void calculateManhattanDistance();
     static int calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state);
     bool isGoalState() const;
 
@@ -41,7 +41,9 @@ public:
     Node* getParent() const;
     uint32_t getDepth() const;
     uint32_t getId() const;
+    uint8_t getHeuristicValue() const;
     uint32_t getCost() const;
+    void setCost(int costValue);
 
     void printState() const;
     void printPath() const;

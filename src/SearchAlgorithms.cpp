@@ -2,15 +2,6 @@
 
 SearchMetrics SearchAlgorithms::metrics;
 
-std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionBFS = 
-    [](const std::array<uint8_t, 9>&, const int) -> int { return 0; };
-std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionIDFS = 
-    [](const std::array<uint8_t, 9>&, const int) -> int { return 0; };
-std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionGBFS = 
-    [](const std::array<uint8_t, 9>& state, const int) -> int { return Node::calculateManhattanDistanceStatic(state); };
-std::function<int(const std::array<uint8_t, 9>&, const int)> SearchAlgorithms::costFunctionASTAR = 
-    [](const std::array<uint8_t, 9>& state, const int depth) -> int { return Node::calculateManhattanDistanceStatic(state) + depth; };
-
 void SearchAlgorithms::clearMetrics()
 {
     metrics = SearchMetrics();
@@ -34,11 +25,15 @@ void SearchAlgorithms::setPathMetrics(Node* finalNode)
     }
     
     metrics.optimalSolutionLength = pathLength;
-    metrics.initialValueHeuristic = currentNode->calculateManhattanDistance();
+    metrics.initialValueHeuristic = currentNode->getHeuristicValue();
 }
 
 void SearchAlgorithms::printMetrics()
 {
+    // Means that calculated the manhattan distance only for the initial node
+    if (heuristicNumberCalls == 1)
+        averageValueHeuristic = 0;
+
     std::cout << metrics.numExpandedNodes << ","
         << metrics.optimalSolutionLength << ","
         << metrics.time << ","
@@ -104,6 +99,8 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
     if (initialNode.isGoalState())
         return &initialNode;
 
+    initialNode.calculateManhattanDistance();
+
     std::deque<Node*> open;
     open.push_back(&initialNode);
 
@@ -116,7 +113,7 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
         open.pop_front();
         metrics.numExpandedNodes++;
 
-        for (Node* child: currentNode->generateChildren(costFunctionBFS))
+        for (Node* child: currentNode->generateChildren())
         {
             if (child->isGoalState())
                 return child;
@@ -140,7 +137,7 @@ std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int
     if (depthLimit > 0)
     {
         metrics.numExpandedNodes++;
-        for (Node* child: initialNode->generateChildren(costFunctionIDFS))
+        for (Node* child: initialNode->generateChildren())
         {
             std::optional<Node*> solution = depthLimitedSearch(child, depthLimit - 1);
             if (solution.has_value())
@@ -155,6 +152,7 @@ std::optional<Node*> SearchAlgorithms::iterativeDeepeningSearch(Node& initialNod
 {
     clearMetrics();
 
+    initialNode.calculateManhattanDistance();
     for (int depthLimit = 0; ; ++depthLimit)
     {
         std::optional<Node*> solution = depthLimitedSearch(&initialNode, depthLimit);
@@ -198,6 +196,8 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
     std::priority_queue<Node*, std::vector<Node*>, CompareNodeGbfs> open;
     std::unordered_set<Node*, NodeHash, NodeEqual> closed;
 
+    initialNode.calculateManhattanDistance();
+    initialNode.setCost(initialNode.getHeuristicValue() + initialNode.getDepth());
     open.push(&initialNode);
 
     while(!open.empty())
@@ -212,8 +212,13 @@ std::optional<Node*> SearchAlgorithms::greedyBestFirstSearch(Node& initialNode)
                 return currentNode;
 
             metrics.numExpandedNodes++;
-            for (Node* child: currentNode->generateChildren(costFunctionGBFS))
+            for (Node* child: currentNode->generateChildren())
+            {
+                child->calculateManhattanDistance();
+                child->setCost(child->getHeuristicValue());
                 open.push(child);
+            }
+                
         }
     }
 
@@ -229,8 +234,8 @@ struct CompareNodeAstar
 
         if (n1f == n2f)
         {
-            int n1g = n1->calculateManhattanDistance();
-            int n2g = n2->calculateManhattanDistance();
+            int n1g = n1->getHeuristicValue();
+            int n2g = n2->getHeuristicValue();
 
             if (n1g == n2g)
             {
@@ -255,6 +260,8 @@ std::optional<Node*> SearchAlgorithms::astar(Node& initialNode)
     std::unordered_set<Node*, NodeHash, NodeEqual> closed;
 
     open.push(&initialNode);
+    initialNode.calculateManhattanDistance();
+    initialNode.setCost(initialNode.getHeuristicValue() + initialNode.getDepth());
 
     while(!open.empty())
     {
@@ -268,8 +275,12 @@ std::optional<Node*> SearchAlgorithms::astar(Node& initialNode)
                 return currentNode;
 
             metrics.numExpandedNodes++;
-            for (Node* child: currentNode->generateChildren(costFunctionASTAR))
+            for (Node* child: currentNode->generateChildren())
+            {
+                child->calculateManhattanDistance();
+                child->setCost(child->getHeuristicValue() + child->getDepth());
                 open.push(child);
+            }
         }
     }
 
