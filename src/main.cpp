@@ -5,8 +5,8 @@
 #include "ErrorCodes.h"
 #include "SearchAlgorithms.h"
 
-int heuristicNumberCalls = 0;
-double averageValueHeuristic = 0.0f;
+int HeuristicNumberCalls = 0;
+double AverageValueHeuristic = 0.0f;
 
 int main(int argc, char* argv[])
 {
@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
 
             SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
             SearchAlgorithms::printMetrics();
-            //std::cout << "\nTamanho da classe Node: " << sizeof(Node) << " bytes\n";
+
+            Node::desalocateAllNodes();
         }
     }
     else

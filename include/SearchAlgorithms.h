@@ -10,8 +10,8 @@
 #include <optional>
 #include <queue>
 
-extern int heuristicNumberCalls;
-extern double averageValueHeuristic;
+extern int HeuristicNumberCalls;
+extern double AverageValueHeuristic;
 
 struct SearchMetrics
 {

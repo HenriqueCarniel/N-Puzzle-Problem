@@ -9,8 +9,8 @@
 #include <functional>
 #include <bitset>
 
-extern int heuristicNumberCalls;
-extern double averageValueHeuristic;
+extern int HeuristicNumberCalls;
+extern double AverageValueHeuristic;
 
 class Node
 {
@@ -25,16 +25,17 @@ private:
     uint8_t heuristicValue;
 
     static uint idCounter;
+    static std::vector<Node*> allNodes;
     static const uint8_t sideLenght;
     static const std::array<uint8_t, 9> goalState;
     static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;
     
 public:
     Node(const std::array<uint8_t, 9>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
-    static void initialize15puzzle();
     std::vector<Node*> generateChildren();
     void calculateManhattanDistance();
-    static int calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state);
+    static int calculateManhattanDistanceInitialNode(const std::array<uint8_t, 9>& state);
+    static void desalocateAllNodes();
     bool isGoalState() const;
 
     std::array<uint8_t, 9> getState() const;

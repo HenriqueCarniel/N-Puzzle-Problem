@@ -1,6 +1,7 @@
 #include "Node.h"
 
 uint Node::idCounter = 0;
+std::vector<Node*> Node::allNodes;
 const std::array<uint8_t, 9> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8}; //9, 10, 11, 12, 13, 14, 15};
 const uint8_t Node::sideLenght = 3;
 
@@ -37,7 +38,9 @@ std::vector<Node*> Node::generateChildren()
                 std::array<uint8_t, 9> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
 
-                children.emplace_back(new Node(newState, this, 0, depth + 1));
+                Node* childNode = new Node(newState, this, 0, depth + 1);
+                allNodes.emplace_back(childNode);
+                children.emplace_back(childNode);
             }
         }
     }
@@ -54,7 +57,7 @@ void Node::calculateManhattanDistance()
 {
     if (!parent)
     {
-        heuristicValue = calculateManhattanDistanceStatic(state);
+        heuristicValue = calculateManhattanDistanceInitialNode(state);
     }
        
     int distance = 0;
@@ -75,11 +78,11 @@ void Node::calculateManhattanDistance()
 
     heuristicValue = distance;
 
-    heuristicNumberCalls += 1;
-    averageValueHeuristic += heuristicValue;
+    HeuristicNumberCalls += 1;
+    AverageValueHeuristic += heuristicValue;
 }
 
-int Node::calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state)
+int Node::calculateManhattanDistanceInitialNode(const std::array<uint8_t, 9>& state)
 {
     int distance = 0;
     int N = state.size();
@@ -98,6 +101,13 @@ int Node::calculateManhattanDistanceStatic(const std::array<uint8_t, 9>& state)
     }
 
     return distance;
+}
+
+void Node::desalocateAllNodes()
+{
+    for (Node* node : allNodes)
+        delete node;
+    allNodes.clear();
 }
 
 std::array<uint8_t, 9> Node::getState() const

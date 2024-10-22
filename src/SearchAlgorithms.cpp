@@ -5,8 +5,8 @@ SearchMetrics SearchAlgorithms::metrics;
 void SearchAlgorithms::clearMetrics()
 {
     metrics = SearchMetrics();
-    heuristicNumberCalls = 0;
-    averageValueHeuristic = 0;
+    HeuristicNumberCalls = 0;
+    AverageValueHeuristic = 0;
 }
 
 void SearchAlgorithms::setPathMetrics(Node* finalNode)
@@ -31,13 +31,13 @@ void SearchAlgorithms::setPathMetrics(Node* finalNode)
 void SearchAlgorithms::printMetrics()
 {
     // Means that calculated the manhattan distance only for the initial node
-    if (heuristicNumberCalls == 1)
-        averageValueHeuristic = 0;
+    if (HeuristicNumberCalls == 1)
+        AverageValueHeuristic = 0;
 
     std::cout << metrics.numExpandedNodes << ","
         << metrics.optimalSolutionLength << ","
         << metrics.time << ","
-        << averageValueHeuristic / heuristicNumberCalls << ","
+        << AverageValueHeuristic / HeuristicNumberCalls << ","
         << metrics.initialValueHeuristic << std::endl;
 }
 
@@ -158,6 +158,8 @@ std::optional<Node*> SearchAlgorithms::iterativeDeepeningSearch(Node& initialNod
         std::optional<Node*> solution = depthLimitedSearch(&initialNode, depthLimit);
         if (solution.has_value())
             return solution;
+
+        Node::desalocateAllNodes();
     }
 
     return std::nullopt;
