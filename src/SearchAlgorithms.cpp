@@ -60,7 +60,7 @@ void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
     }
     else if (type == SearchAlgorithm::IDASTAR)
     {
-        // TODO
+        response = SearchAlgorithms::idastar(rootPuzzle);
     }
     else if (type == SearchAlgorithm::GBFS)
     {
@@ -129,15 +129,15 @@ std::optional<Node*> SearchAlgorithms::bfsGraph(Node& initialNode)
     return std::nullopt;
 }
 
-std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* initialNode, int depthLimit)
+std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* node, int depthLimit)
 {
-    if (initialNode->isGoalState())
-        return initialNode;
+    if (node->isGoalState())
+        return node;
 
     if (depthLimit > 0)
     {
         metrics.numExpandedNodes++;
-        for (Node* child: initialNode->generateChildren())
+        for (Node* child: node->generateChildren())
         {
             std::optional<Node*> solution = depthLimitedSearch(child, depthLimit - 1);
             if (solution.has_value())
@@ -284,6 +284,54 @@ std::optional<Node*> SearchAlgorithms::astar(Node& initialNode)
                 open.push(child);
             }
         }
+    }
+
+    return std::nullopt;
+}
+
+std::pair<int, std::optional<Node*>> SearchAlgorithms::depthLimitedIdastar(Node* node, int fLimit)
+{
+    node->calculateManhattanDistance();
+    node->setCost(node->getHeuristicValue() + node->getDepth());
+
+    if (node->getCost() > fLimit)
+        return {node->getCost(), std::nullopt};
+
+    if (node->isGoalState())
+        return {fLimit, node};
+
+    int nextLimit = std::numeric_limits<int>::max();
+    metrics.numExpandedNodes++;
+
+    for (Node* child : node->generateChildren())
+    {
+        auto result = depthLimitedIdastar(child, fLimit);
+
+        if (result.second.has_value())
+            return result;
+
+        nextLimit = std::min(nextLimit, result.first);
+    }
+
+    return {nextLimit, std::nullopt};
+}
+
+std::optional<Node*> SearchAlgorithms::idastar(Node& initialNode)
+{
+    clearMetrics();
+
+    initialNode.calculateManhattanDistance();
+    int fLimit = initialNode.getHeuristicValue();
+    
+    while (fLimit != std::numeric_limits<int>::max())
+    {
+        std::pair<int, std::optional<Node*>> result = depthLimitedIdastar(&initialNode, fLimit);
+
+        if (result.second.has_value())
+            return result.second;
+
+        fLimit = result.first;
+        Node::desalocateAllNodes();
     }
 
     return std::nullopt;

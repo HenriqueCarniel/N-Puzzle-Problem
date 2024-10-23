@@ -9,6 +9,7 @@
 #include <chrono>
 #include <optional>
 #include <queue>
+#include <limits>
 
 extern int HeuristicNumberCalls;
 extern double AverageValueHeuristic;
@@ -28,10 +29,12 @@ private:
     static void setPathMetrics(Node* finalNode);
 
     static std::optional<Node*> bfsGraph(Node& initialNode);
-    static std::optional<Node*> depthLimitedSearch(Node* initialNode, int depthLimit);
+    static std::optional<Node*> depthLimitedSearch(Node* node, int depthLimit);
     static std::optional<Node*> iterativeDeepeningSearch(Node& initialNode);
     static std::optional<Node*> greedyBestFirstSearch(Node& initialNode);
     static std::optional<Node*> astar(Node& initialNode);
+    static std::pair<int, std::optional<Node*>> depthLimitedIdastar(Node* node, int fLimit);
+    static std::optional<Node*> idastar(Node& initialNode);
 
 public:
     static SearchMetrics metrics;
