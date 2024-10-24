@@ -6,8 +6,9 @@
 class Node15: public Node
 {
 private:
-    static const uint8_t sideLength = 4;
     std::array<uint8_t, 16> state; 
+    
+    static const uint8_t sideLength = 4;
     static const std::array<uint8_t, 16> goalState;
 
 public:

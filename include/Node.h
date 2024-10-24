@@ -9,13 +9,12 @@
 class Node
 {
 protected:
-    const uint32_t id;
-    uint8_t blankIndex;
-
-    Node* parent;
-    uint32_t cost;
-    uint32_t depth;
-    uint8_t heuristicValue;
+    Node* parent;                 // Ponteiro, 8 bytes (mover para o topo)
+    const uint32_t id;            // 4 bytes
+    uint32_t cost;                // 4 bytes
+    uint32_t depth;               // 4 bytes
+    uint8_t blankIndex;           // 1 byte
+    uint8_t heuristicValue;       // 1 byte
 
     static uint idCounter;
     static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;

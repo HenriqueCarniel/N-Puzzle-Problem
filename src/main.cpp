@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
+#include <csignal>
 #include "Node8.h"
 #include "Node15.h"
 #include "InputHandler.h"
 #include "ErrorCodes.h"
 #include "SearchAlgorithms.h"
-#include <csignal>
 
 int HeuristicNumberCalls = 0;
 double AverageValueHeuristic = 0.0f;
