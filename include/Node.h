@@ -31,7 +31,7 @@ private:
     static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;
     
 public:
-    Node(const std::array<uint8_t, 9>& state, Node* parent = nullptr, int cost = 0, int depth = 0);
+    Node(const std::array<uint8_t, 9>& state, Node* parent = nullptr, int cost = 0, int depth = 0, uint8_t blankIndex = -1);
     std::vector<Node*> generateChildren();
     void calculateManhattanDistance();
     static int calculateManhattanDistanceInitialNode(const std::array<uint8_t, 9>& state);

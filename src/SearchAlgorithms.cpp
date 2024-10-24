@@ -167,27 +167,18 @@ std::optional<Node*> SearchAlgorithms::iterativeDeepeningSearch(Node& initialNod
 
 struct CompareNodeGbfs
 {
-    bool operator()(Node* const& n1, Node* const& n2)
-    {
+    bool operator()(Node* const& n1, Node* const& n2) {
         int n1f = n1->getCost();
         int n2f = n2->getCost();
 
-        if (n1f == n2f)
-        {
-            int n1g = n1->getDepth();
-            int n2g = n2->getDepth();
+        if (n1f != n2f) return n1f > n2f;
 
-            if (n1g == n2g)
-            {
-                int n1id = n1->getId();
-                int n2id = n2->getId();
-                
-                return n1id < n2id;
-            }
-            return n1g < n2g;
-        }
-        
-        return n1f > n2f;
+        int n1g = n1->getDepth();
+        int n2g = n2->getDepth();
+
+        if (n1g != n2g) return n1g < n2g;
+
+        return n1->getId() < n2->getId();
     }
 };
 
@@ -234,23 +225,14 @@ struct CompareNodeAstar
         int n1f = n1->getCost();
         int n2f = n2->getCost();
 
-        if (n1f == n2f)
-        {
-            int n1g = n1->getHeuristicValue();
-            int n2g = n2->getHeuristicValue();
+        if (n1f != n2f) return n1f > n2f;
 
-            if (n1g == n2g)
-            {
-                int n1id = n1->getId();
-                int n2id = n2->getId();
-                
-                return n1id < n2id;
-            }
+        int n1g = n1->getHeuristicValue();
+        int n2g = n2->getHeuristicValue();
 
-            return n1g > n2g;
-        }
-        
-        return n1f > n2f;
+        if (n1g != n2g) return n1g > n2g;
+
+        return n1->getId() < n2->getId();
     }
 };
 

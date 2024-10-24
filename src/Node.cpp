@@ -13,11 +13,19 @@ const std::array<std::pair<int8_t, int8_t>, 4> Node::DIRECTIONS = {
     std::make_pair(1, 0)    // Down
 };
 
-Node::Node(const std::array<uint8_t, 9>& state, Node* parent, int cost, int depth)
+Node::Node(const std::array<uint8_t, 9>& state, Node* parent, int cost, int depth, uint8_t blankIndex)
     : state(state), parent(parent), cost(cost), depth(depth), id(idCounter++)
 {
-    auto it = std::find(state.begin(), state.end(), 0);
-    blankIndex = std::distance(state.begin(), it);
+    if (!parent)
+    {
+        auto it = std::find(state.begin(), state.end(), 0);
+        this->blankIndex = std::distance(state.begin(), it);
+    }
+    else
+    {
+        this->blankIndex = blankIndex;
+    }
+        
 }
 
 std::vector<Node*> Node::generateChildren()
@@ -31,14 +39,15 @@ std::vector<Node*> Node::generateChildren()
 
         if (newRow >= 0 && newRow < sideLenght && newCol >= 0 && newCol < sideLenght)
         {
-            int newIndex = newRow * sideLenght + newCol;
+            uint8_t newIndex = newRow * sideLenght + newCol;
             
             if (parent == nullptr || newIndex != parent->blankIndex)
             {
                 std::array<uint8_t, 9> newState(state);
                 std::swap(newState[blankIndex], newState[newIndex]);
+                //std::swap(blankIndex, newIndex);
 
-                Node* childNode = new Node(newState, this, 0, depth + 1);
+                Node* childNode = new Node(newState, this, 0, depth + 1, newIndex);
                 allNodes.emplace_back(childNode);
                 children.emplace_back(childNode);
             }
@@ -55,11 +64,35 @@ bool Node::isGoalState() const
 
 void Node::calculateManhattanDistance()
 {
+    HeuristicNumberCalls += 1;
+
     if (!parent)
     {
         heuristicValue = calculateManhattanDistanceInitialNode(state);
+        AverageValueHeuristic += heuristicValue;
+        return;
     }
-       
+
+    /*
+    uint8_t movedTile = state[parent->blankIndex];
+    int goalRow = movedTile / sideLenght;
+    int goalCol = movedTile % sideLenght;
+    int oldRow = parent->blankIndex / sideLenght;
+    int oldCol = parent->blankIndex % sideLenght;
+    int newRow = blankIndex / sideLenght;
+    int newCol = blankIndex % sideLenght;
+    int oldDistance = std::abs(goalRow - oldRow) + std::abs(goalCol - oldCol);
+    int newDistance = std::abs(goalRow - newRow) + std::abs(goalCol - newCol);
+    
+    heuristicValue = parent->heuristicValue;
+    if (newDistance < oldDistance)
+        heuristicValue -= 1;
+    else
+        heuristicValue += 1;
+
+    AverageValueHeuristic += heuristicValue;
+    */
+
     int distance = 0;
     int N = state.size();
 
@@ -77,8 +110,6 @@ void Node::calculateManhattanDistance()
     }
 
     heuristicValue = distance;
-
-    HeuristicNumberCalls += 1;
     AverageValueHeuristic += heuristicValue;
 }
 
