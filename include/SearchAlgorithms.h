@@ -11,9 +11,6 @@
 #include <queue>
 #include <limits>
 
-extern int HeuristicNumberCalls;
-extern double AverageValueHeuristic;
-
 struct SearchMetrics
 {
     int numExpandedNodes = 0;

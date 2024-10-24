@@ -1,7 +1,10 @@
 #include "Node.h"
 
+extern std::vector<Node*> AllNodes;
+extern int HeuristicNumberCalls;
+extern double AverageValueHeuristic;
+
 uint Node::idCounter = 0;
-std::vector<Node*> Node::allNodes;
 const std::array<uint8_t, 9> Node::goalState = {0, 1, 2, 3, 4, 5, 6, 7, 8}; //9, 10, 11, 12, 13, 14, 15};
 const uint8_t Node::sideLenght = 3;
 
@@ -48,7 +51,7 @@ std::vector<Node*> Node::generateChildren()
                 //std::swap(blankIndex, newIndex);
 
                 Node* childNode = new Node(newState, this, 0, depth + 1, newIndex);
-                allNodes.emplace_back(childNode);
+                AllNodes.emplace_back(childNode);
                 children.emplace_back(childNode);
             }
         }
@@ -136,9 +139,9 @@ int Node::calculateManhattanDistanceInitialNode(const std::array<uint8_t, 9>& st
 
 void Node::desalocateAllNodes()
 {
-    for (Node* node : allNodes)
+    for (Node* node : AllNodes)
         delete node;
-    allNodes.clear();
+    AllNodes.clear();
 }
 
 std::array<uint8_t, 9> Node::getState() const

@@ -4,12 +4,22 @@
 #include "InputHandler.h"
 #include "ErrorCodes.h"
 #include "SearchAlgorithms.h"
+#include <csignal>
 
 int HeuristicNumberCalls = 0;
 double AverageValueHeuristic = 0.0f;
+std::vector<Node*> AllNodes;
+
+void handle_sigterm(int signum)
+{
+    Node::desalocateAllNodes();
+    exit(signum);
+}
 
 int main(int argc, char* argv[])
 {
+    std::signal(SIGTERM, handle_sigterm);
+
     if (argc < 2)
     {
         std::cerr << "Use: ./main -<search_algorithm> <initial_states> or ./main -<search_algorithm> < <input_file>" << std::endl;

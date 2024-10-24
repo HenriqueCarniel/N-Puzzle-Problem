@@ -9,9 +9,6 @@
 #include <functional>
 #include <bitset>
 
-extern int HeuristicNumberCalls;
-extern double AverageValueHeuristic;
-
 class Node
 {
 private:
@@ -25,7 +22,6 @@ private:
     uint8_t heuristicValue;
 
     static uint idCounter;
-    static std::vector<Node*> allNodes;
     static const uint8_t sideLenght;
     static const std::array<uint8_t, 9> goalState;
     static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;

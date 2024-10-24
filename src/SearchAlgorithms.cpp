@@ -1,5 +1,8 @@
 #include "SearchAlgorithms.h"
 
+extern int HeuristicNumberCalls;
+extern double AverageValueHeuristic;
+
 SearchMetrics SearchAlgorithms::metrics;
 
 void SearchAlgorithms::clearMetrics()
