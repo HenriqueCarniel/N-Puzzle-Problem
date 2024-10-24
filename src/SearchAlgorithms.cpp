@@ -50,25 +50,15 @@ void SearchAlgorithms::runAlgorithm(Node& rootPuzzle, SearchAlgorithm type)
     auto start = std::chrono::high_resolution_clock::now();
 
     if (type == SearchAlgorithm::BFS)
-    {
         response = SearchAlgorithms::bfsGraph(rootPuzzle);
-    }
     else if (type == SearchAlgorithm::IDFS)
-    {
         response = SearchAlgorithms::iterativeDeepeningSearch(rootPuzzle);
-    }
     else if (type == SearchAlgorithm::ASTAR)
-    {
         response = SearchAlgorithms::astar(rootPuzzle);
-    }
     else if (type == SearchAlgorithm::IDASTAR)
-    {
         response = SearchAlgorithms::idastar(rootPuzzle);
-    }
     else if (type == SearchAlgorithm::GBFS)
-    {
         response = SearchAlgorithms::greedyBestFirstSearch(rootPuzzle);
-    }
 
     auto end = std::chrono::high_resolution_clock::now();
     metrics.time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000000.0;
@@ -80,10 +70,7 @@ struct NodeHash
 {
     size_t operator()(const Node* node) const
     {
-        size_t hash = 0;
-        for (int num : node->getState())
-            hash ^= std::hash<int>()(num) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-        return hash;
+        return std::hash<uint64_t>()(node->getState());
     }
 };
 
