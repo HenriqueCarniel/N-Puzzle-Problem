@@ -44,7 +44,7 @@ void SearchAlgorithms::printMetrics()
         << metrics.initialValueHeuristic << std::endl;
 }
 
-void SearchAlgorithms::runAlgorithm(Node rootPuzzle, SearchAlgorithm type)
+void SearchAlgorithms::runAlgorithm(Node& rootPuzzle, SearchAlgorithm type)
 {
     std::optional<Node*> response;
     auto start = std::chrono::high_resolution_clock::now();

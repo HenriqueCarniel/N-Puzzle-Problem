@@ -35,7 +35,7 @@ private:
 
 public:
     static SearchMetrics metrics;
-    static void runAlgorithm(Node initialState, SearchAlgorithm type);
+    static void runAlgorithm(Node& rootPuzzle, SearchAlgorithm type);
     static void printMetrics();
 };
 

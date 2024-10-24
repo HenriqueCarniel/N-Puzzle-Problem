@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "Node.h"
+#include "Node8.h"
+#include "Node15.h"
 #include "InputHandler.h"
 #include "ErrorCodes.h"
 #include "SearchAlgorithms.h"
@@ -13,6 +14,7 @@ std::vector<Node*> AllNodes;
 void handle_sigterm(int signum)
 {
     Node::desalocateAllNodes();
+    std::cout << "-,-,-,-,-" << std::endl;
     exit(signum);
 }
 
@@ -36,18 +38,37 @@ int main(int argc, char* argv[])
     std::vector<std::vector<uint8_t>> initialStates = InputHandler::processInput(argc, argv);
     if (!initialStates.empty())
     {
-        size_t puzzleSize = initialStates[0].size();
         for (std::vector<uint8_t> initialState: initialStates)
         {
-            std::array<uint8_t, 9> arrayState;
-            std::copy(initialState.begin(), initialState.end(), arrayState.begin());
-            Node rootPuzzle(arrayState);
+            size_t puzzleSize = initialState.size();
+            if (puzzleSize == 16)
+            {
+                std::array<uint8_t, 16> arrayState;
+                std::copy(initialState.begin(), initialState.end(), arrayState.begin());
+                Node15 rootPuzzle(arrayState);
+                SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
+                
+            }
+            else if (puzzleSize == 9)
+            {
+                std::array<uint8_t, 9> arrayState;
+                std::copy(initialState.begin(), initialState.end(), arrayState.begin());
+                Node8 rootPuzzle(arrayState);
+                SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
+            }
+            else
+            {
+                std::cerr << "Invalid puzzle size. Only 8-puzzle and 15-puzzle are supported." << std::endl;
+                return static_cast<int>(ErrorCode::PUZZLE_SIZE);
+            }
 
-            SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
             SearchAlgorithms::printMetrics();
-
             Node::desalocateAllNodes();
         }
+
+        //std::cout << "Size of Node class: " << sizeof(Node) << std::endl;
+        //std::cout << "Size of Node8 class: " << sizeof(Node8) << std::endl;
+        //std::cout << "Size of Node15 class: " << sizeof(Node15) << std::endl;
     }
     else
     {

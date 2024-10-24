@@ -2,48 +2,41 @@
 #define NODE_H
 
 #include <vector>
-#include <cmath>
 #include <iostream>
 #include <algorithm>
-#include <numeric> // std::iota
-#include <functional>
-#include <bitset>
+#include <array>
 
 class Node
 {
-private:
+protected:
     const uint32_t id;
     uint8_t blankIndex;
 
-    std::array<uint8_t, 9> state;
     Node* parent;
     uint32_t cost;
     uint32_t depth;
     uint8_t heuristicValue;
 
     static uint idCounter;
-    static const uint8_t sideLenght;
-    static const std::array<uint8_t, 9> goalState;
     static const std::array<std::pair<int8_t, int8_t>, 4> DIRECTIONS;
     
 public:
-    Node(const std::array<uint8_t, 9>& state, Node* parent = nullptr, int cost = 0, int depth = 0, uint8_t blankIndex = -1);
-    std::vector<Node*> generateChildren();
-    void calculateManhattanDistance();
-    static int calculateManhattanDistanceInitialNode(const std::array<uint8_t, 9>& state);
-    static void desalocateAllNodes();
-    bool isGoalState() const;
+    Node(Node* parent = nullptr, int cost = 0, int depth = 0, uint8_t blankIndex = -1);
+    virtual std::vector<Node*> generateChildren() = 0;
+    virtual void calculateManhattanDistance() = 0;
+    virtual bool isGoalState() const = 0;
+    virtual std::vector<uint8_t> getState() const = 0;
 
-    std::array<uint8_t, 9> getState() const;
-    Node* getParent() const;
     uint32_t getDepth() const;
     uint32_t getId() const;
     uint8_t getHeuristicValue() const;
     uint32_t getCost() const;
+    uint8_t getBlankIndex() const;
     void setCost(int costValue);
 
-    void printState() const;
-    void printPath() const;
+    Node* getParent() const;
+
+    static void desalocateAllNodes();
 };
 
 #endif
