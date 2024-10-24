@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
                 std::copy(initialState.begin(), initialState.end(), arrayState.begin());
                 Node15 rootPuzzle(arrayState);
                 SearchAlgorithms::runAlgorithm(rootPuzzle, search_algorithm);
-                
             }
             else if (puzzleSize == 9)
             {
