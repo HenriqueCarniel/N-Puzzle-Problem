@@ -132,6 +132,8 @@ std::optional<Node*> SearchAlgorithms::depthLimitedSearch(Node* node, int depthL
             std::optional<Node*> solution = depthLimitedSearch(child, depthLimit - 1);
             if (solution.has_value())
                 return solution;
+
+            delete child;
         }
     }
 
@@ -283,6 +285,7 @@ std::pair<int, std::optional<Node*>> SearchAlgorithms::depthLimitedIdastar(Node*
             return result;
 
         nextLimit = std::min(nextLimit, result.first);
+        delete child;
     }
 
     return {nextLimit, std::nullopt};

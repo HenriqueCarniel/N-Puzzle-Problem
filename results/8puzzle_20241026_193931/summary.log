@@ -1,0 +1,28 @@
+----------------------------------------
+Algoritmo bfs
+Linhas executadas: 100
+Tempo total de execução: 2.24 segundos
+Uso máximo de memória: 25608 kbytes
+----------------------------------------
+Algoritmo idfs
+Linhas executadas: 100
+Tempo total de execução: 13.45 segundos
+Uso máximo de memória: 3976 kbytes
+----------------------------------------
+Algoritmo astar
+Linhas executadas: 100
+Tempo total de execução: 0 segundos
+Uso máximo de memória: 4504 kbytes
+----------------------------------------
+Algoritmo idastar
+Linhas executadas: 100
+Tempo total de execução: 0 segundos
+Uso máximo de memória: 3972 kbytes
+----------------------------------------
+Algoritmo gbfs
+Linhas executadas: 100
+Tempo total de execução: 0 segundos
+Uso máximo de memória: 4052 kbytes
+========================================
+Tempo total de execução para todos os algoritmos: 15.69 segundos
+Uso máximo de memória para todos os algoritmos: 25608 kbytes
