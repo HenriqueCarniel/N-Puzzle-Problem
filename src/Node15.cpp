@@ -78,22 +78,52 @@ void Node15::calculateManhattanDistance()
         return;
     }
 
-    int distance = 0;
+    int8_t movedIndex = parent->getBlankIndex();
+    int8_t difference = movedIndex - blankIndex;
+    heuristicValue = parent->getHeuristicValue();
 
-    for (int i = 0; i < 16; ++i)
+    // Move to right
+    if (difference == 1)
     {
-        if (decodedState[i] != 0)
-        {
-            int goalRow = decodedState[i] / sideLength;
-            int goalCol = decodedState[i] % sideLength;
-            int currentRow = i / sideLength;
-            int currentCol = i % sideLength;
-
-            distance += std::abs(currentRow - goalRow) + std::abs(currentCol - goalCol);
-        }
+        int8_t goalCol = decodedState[movedIndex] % sideLength;
+        int8_t newCol = movedIndex % sideLength;
+        if (goalCol - newCol >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
+    }
+    // Move to left
+    else if (difference == -1)
+    {
+        int8_t goalCol = decodedState[movedIndex] % sideLength;
+        int8_t newCol = movedIndex % sideLength;
+        if (newCol - goalCol >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
+    }
+    // Move to down
+    else if (difference == sideLength)
+    {
+        int8_t goalRow = decodedState[movedIndex] / sideLength;
+        int8_t newRow = movedIndex / sideLength;
+        if (goalRow - newRow >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
+    }
+    // Move to up
+    else
+    {
+        int8_t goalRow = decodedState[movedIndex] / sideLength;
+        int8_t newRow = movedIndex / sideLength;
+        if (newRow - goalRow >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
     }
 
-    heuristicValue = distance;
+    //heuristicValue = ;
     AverageValueHeuristic += heuristicValue;
 }
 

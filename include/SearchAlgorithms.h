@@ -22,6 +22,8 @@ struct SearchMetrics
 class SearchAlgorithms
 {
 private:
+    static const int MAX_INT = std::numeric_limits<int>::max();
+
     static void clearMetrics();
     static void setPathMetrics(Node* finalNode);
 

@@ -274,7 +274,7 @@ std::pair<int, std::optional<Node*>> SearchAlgorithms::depthLimitedIdastar(Node*
     if (node->isGoalState())
         return {fLimit, node};
 
-    int nextLimit = std::numeric_limits<int>::max();
+    int nextLimit = MAX_INT;
     metrics.numExpandedNodes++;
 
     for (Node* child : node->generateChildren())
@@ -298,7 +298,7 @@ std::optional<Node*> SearchAlgorithms::idastar(Node& initialNode)
     initialNode.calculateManhattanDistance();
     int fLimit = initialNode.getHeuristicValue();
     
-    while (fLimit != std::numeric_limits<int>::max())
+    while (fLimit != MAX_INT)
     {
         std::pair<int, std::optional<Node*>> result = depthLimitedIdastar(&initialNode, fLimit);
 

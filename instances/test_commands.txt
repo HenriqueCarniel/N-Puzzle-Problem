@@ -6,4 +6,4 @@
 ############# Para gerar relatórios de performance #############
 make debug
 ./main -idfs 0 6 1 7 4 2 3 8 5, 5 0 2 6 4 8 1 7 3, 2 4 7 0 3 6 8 1 5
-gprof ./main gmon.out > profile.txt
+gprof ./main gmon.out > results/profile.txt
