@@ -82,38 +82,7 @@ void Node15::calculateManhattanDistance()
     int8_t difference = movedIndex - blankIndex;
     heuristicValue = parent->getHeuristicValue();
 
-    // Move to right
-    if (difference == 1)
-    {
-        int8_t goalCol = decodedState[movedIndex] % sideLength;
-        int8_t newCol = movedIndex % sideLength;
-        if (goalCol - newCol >= 0)
-            heuristicValue -= 1;
-        else
-            heuristicValue += 1;
-    }
-    // Move to left
-    else if (difference == -1)
-    {
-        int8_t goalCol = decodedState[movedIndex] % sideLength;
-        int8_t newCol = movedIndex % sideLength;
-        if (newCol - goalCol >= 0)
-            heuristicValue -= 1;
-        else
-            heuristicValue += 1;
-    }
-    // Move to down
-    else if (difference == sideLength)
-    {
-        int8_t goalRow = decodedState[movedIndex] / sideLength;
-        int8_t newRow = movedIndex / sideLength;
-        if (goalRow - newRow >= 0)
-            heuristicValue -= 1;
-        else
-            heuristicValue += 1;
-    }
-    // Move to up
-    else
+    if (difference == -sideLength) // Move to up
     {
         int8_t goalRow = decodedState[movedIndex] / sideLength;
         int8_t newRow = movedIndex / sideLength;
@@ -122,8 +91,34 @@ void Node15::calculateManhattanDistance()
         else
             heuristicValue += 1;
     }
+    else if (difference == -1) // Move to left
+    {
+        int8_t goalCol = decodedState[movedIndex] % sideLength;
+        int8_t newCol = movedIndex % sideLength;
+        if (newCol - goalCol >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
+    }
+    else if (difference == 1) // Move to right
+    {
+        int8_t goalCol = decodedState[movedIndex] % sideLength;
+        int8_t newCol = movedIndex % sideLength;
+        if (goalCol - newCol >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
+    }
+    else // Move to down
+    {
+        int8_t goalRow = decodedState[movedIndex] / sideLength;
+        int8_t newRow = movedIndex / sideLength;
+        if (goalRow - newRow >= 0)
+            heuristicValue -= 1;
+        else
+            heuristicValue += 1;
+    }
 
-    //heuristicValue = ;
     AverageValueHeuristic += heuristicValue;
 }
 
