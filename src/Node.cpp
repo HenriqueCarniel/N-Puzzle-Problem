@@ -1,3 +1,14 @@
+/*
+    Node8.h
+    --------
+    Declaração da classe `Node8`, que representa um nó específico para o problema do 8-puzzle.
+    Esta classe herda da classe base `Node` e fornece métodos para gerar filhos, 
+    calcular a distância de Manhattan e verificar se o estado atual é o estado objetivo.
+
+    Dependências externas:
+    - `Node`: Classe base que define a interface e os métodos comuns para todos os nós do problema.
+*/
+
 #include "Node.h"
 
 extern std::vector<Node*> AllNodes;

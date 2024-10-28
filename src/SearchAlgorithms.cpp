@@ -1,3 +1,33 @@
+/*
+    SearchAlgorithms.h - Implementação de algoritmos de busca para problemas de puzzle (como 8-puzzle ou 15-puzzle).
+    
+    A classe SearchAlgorithms define uma série de algoritmos de busca, incluindo:
+        - BFS
+        - DLS
+        - IDS
+        - Greedy Best-First Search
+        - A*
+        - IDA*
+    
+    Estrutura:
+        - SearchMetrics: estrutura para armazenar métricas, como o número de nós expandidos, 
+          comprimento da solução, tempo de execução e valor heurístico inicial.
+        - NodeHash / NodeEqual: Funções auxiliares para hash e comparação de nós, permitindo 
+          evitar duplicatas durante a busca.
+
+    Funcionamento:
+        - Cada algoritmo usa uma estrutura específica (fila, pilha, ou fila de prioridade) para gerenciar 
+          os nós expandidos, garantindo que os nós sejam explorados conforme a estratégia do algoritmo.
+        - Funções de comparação (CompareNodeGbfs e CompareNodeAstar) ajudam na ordenação dos nós 
+          nas buscas gulosa e A*, permitindo otimização da expansão com base no custo ou heurística.
+
+    Observações:
+        - Gerenciamento de Memória: Alguns algoritmos, como DLS e IDA*, fazem desalocação manual de nós 
+          para otimizar uso de memória.
+        - Otimizações e Controle de Métricas: Inclui contagem de chamadas heurísticas e média para 
+          auxiliar na análise do custo heurístico em diferentes algoritmos.
+*/
+
 #include "SearchAlgorithms.h"
 
 extern int HeuristicNumberCalls;

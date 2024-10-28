@@ -1,3 +1,32 @@
+/*
+    main.cpp
+    --------
+    Arquivo principal do programa que resolve os problemas de 8-puzzle e 15-puzzle utilizando diversos algoritmos de busca. 
+    Esse programa inicializa o ambiente de execução, captura entradas e aplica o algoritmo selecionado para resolver o puzzle.
+
+    Funcionalidades:
+    - Configuração e execução do algoritmo de busca: Aceita o algoritmo de busca como argumento de entrada e instancia o puzzle de 
+      acordo com o tamanho do estado inicial fornecido (8-puzzle ou 15-puzzle).
+    - Controle de sinal SIGTERM: Implementa uma função `handle_sigterm` para desalocar memória e finalizar o programa 
+      com segurança caso receba o sinal de término.
+    - Processamento de Entrada: Usa `InputHandler` para processar a entrada do usuário, que pode ser feita por 
+      argumentos no terminal ou via arquivo redirecionado.
+    - Execução dos Algoritmos: Através de `SearchAlgorithms`, aplica o algoritmo de busca selecionado (como BFS, IDFS, A*, etc.)
+      ao estado inicial do puzzle.
+    - Relatórios de Métricas: Imprime métricas de desempenho ao final da execução de cada algoritmo e desaloca a memória de 
+      todos os nós armazenados na lista global `AllNodes` para evitar vazamentos de memória.
+
+    Parâmetros:
+    - Argumentos via linha de comando: `-<search_algorithm>` (nome do algoritmo) e `<initial_states>` (opcional)
+    - Alternativamente, um arquivo de entrada pode ser redirecionado, contendo o estado inicial.
+
+    Dependências:
+    - "Node8.h" e "Node15.h": Implementações específicas para os puzzles de 8 e 15 tiles, respectivamente.
+    - "InputHandler.h": Responsável por selecionar o algoritmo e processar as entradas.
+    - "ErrorCodes.h": Enumera os códigos de erro específicos para tratar exceções no programa.
+    - "SearchAlgorithms.h": Define os algoritmos de busca que serão executados.
+*/
+
 #include <iostream>
 #include <vector>
 #include <csignal>
@@ -64,10 +93,6 @@ int main(int argc, char* argv[])
             SearchAlgorithms::printMetrics();
             Node::desalocateAllNodes();
         }
-
-        //std::cout << "Size of Node class: " << sizeof(Node) << std::endl;
-        //std::cout << "Size of Node8 class: " << sizeof(Node8) << std::endl;
-        //std::cout << "Size of Node15 class: " << sizeof(Node15) << std::endl;
     }
     else
     {

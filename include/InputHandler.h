@@ -1,3 +1,14 @@
+/*
+    InputHandler.h
+    ---------------
+    Este arquivo contém a definição da classe `InputHandler` e do enum `SearchAlgorithm`, 
+    utilizados para gerenciar a entrada do programa e selecionar o algoritmo de busca adequado 
+    com base nos argumentos do usuário.
+
+    Esta estrutura modulariza o processamento de entrada e a seleção de algoritmos, permitindo um tratamento 
+    eficiente dos argumentos do programa e oferecendo uma base para a expansão de algoritmos de busca.
+*/
+
 #ifndef INPUT_HANDLER_H
 #define INPUT_HANDLER_H
 

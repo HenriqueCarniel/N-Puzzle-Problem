@@ -1,3 +1,11 @@
+/*
+    Node15.h
+    ---------
+    A classe Node8 herda da classe base Node e implementa funcionalidades específicas para 
+    manipular e operar no 15-Puzzle, incluindo a geração de estados filhos, cálculo da 
+    distância de Manhattan e verificação do estado objetivo.
+*/
+
 #ifndef NODE15_H
 #define NODE15_H
 

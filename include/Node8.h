@@ -1,3 +1,11 @@
+/*
+    Node8.h
+    ---------
+    A classe Node8 herda da classe base Node e implementa funcionalidades específicas para 
+    manipular e operar no 8-Puzzle, incluindo a geração de estados filhos, cálculo da 
+    distância de Manhattan e verificação do estado objetivo.
+*/
+
 #ifndef NODE8_H
 #define NODE8_H
 

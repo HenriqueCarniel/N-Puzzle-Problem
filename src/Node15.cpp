@@ -1,3 +1,11 @@
+/*
+    Node15.cpp
+    ---------
+    Implementação da classe `Node15`, que representa um nó específico para o problema do 15-puzzle.
+    Este arquivo contém a implementação dos métodos para gerar filhos, calcular a distância de Manhattan,
+    e verificar se o estado atual é o estado objetivo.
+*/
+
 #include "Node15.h"
 
 extern int HeuristicNumberCalls;

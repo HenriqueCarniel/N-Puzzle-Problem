@@ -1,3 +1,11 @@
+/*
+    Node8.cpp
+    ---------
+    Implementação da classe `Node8`, que representa um nó específico para o problema do 8-puzzle.
+    Este arquivo contém a implementação dos métodos para gerar filhos, calcular a distância de Manhattan,
+    e verificar se o estado atual é o estado objetivo.
+*/
+
 #include "Node8.h"
 
 extern int HeuristicNumberCalls;

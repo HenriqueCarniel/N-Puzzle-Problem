@@ -1,3 +1,16 @@
+/*
+    InputHandler.cpp
+    ----------------
+    Este arquivo implementa a classe `InputHandler`, que lida com o processamento e 
+    validação da entrada para os algoritmos de busca. A `InputHandler` é responsável 
+    por selecionar o algoritmo com base nos argumentos do usuário, bem como por 
+    processar a entrada de estados do puzzle, seja via terminal ou redirecionamento 
+    de arquivo.
+
+    O `InputHandler` é estruturado para ser modular e adaptável a várias fontes de entrada, 
+    facilitando a adição de novos tipos de algoritmo ou ajustes na leitura de estados.
+*/
+
 #include "InputHandler.h"
 #include <sstream>
 #include <iostream>

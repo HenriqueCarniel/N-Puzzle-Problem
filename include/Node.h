@@ -1,3 +1,15 @@
+/*
+    Node.h
+    ------
+    Este arquivo define a classe abstrata `Node`, que serve como base para representar um nó em um 
+    problema de N-Puzzle. A classe `Node` contém atributos e métodos essenciais para a manipulação
+    de estados do puzzle e facilita o desenvolvimento de algoritmos de busca. A classe inclui métodos
+    virtuais puros, projetados para serem implementados em classes derivadas para puzzles de tamanhos específicos.
+
+    Esta classe é desenhada para permitir a criação de diferentes versões especializadas para tamanhos específicos de puzzles,
+    mantendo a maior parte da lógica de busca e manipulação de estado em uma estrutura comum e extensível.
+*/
+
 #ifndef NODE_H
 #define NODE_H
 

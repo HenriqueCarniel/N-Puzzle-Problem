@@ -1,3 +1,11 @@
+/*
+    SearchAlgorithms.h
+    -------------------
+    Este arquivo de cabeçalho define a classe `SearchAlgorithms`, responsável por implementar e executar diversos algoritmos 
+    de busca para resolver puzzles, como o 8-puzzle e o 15-puzzle. A classe também gerencia as métricas de execução de cada 
+    algoritmo para fins de análise e otimização.
+*/
+
 #ifndef SEARCH_ALGORITHMS
 #define SEARCH_ALGORITHMS
 
