@@ -1,12 +1,9 @@
 /*
-    Node8.h
+    Node.cpp
     --------
-    Declaração da classe `Node8`, que representa um nó específico para o problema do 8-puzzle.
-    Esta classe herda da classe base `Node` e fornece métodos para gerar filhos, 
-    calcular a distância de Manhattan e verificar se o estado atual é o estado objetivo.
-
-    Dependências externas:
-    - `Node`: Classe base que define a interface e os métodos comuns para todos os nós do problema.
+    Implementação da classe abstrata `Node`, que serve como base para representar um nó em um 
+    problema de N-Puzzle. Essa classe é desenhada para permitir a criação de diferentes versões especializadas para tamanhos específicos de puzzles,
+    mantendo a maior parte da lógica de busca e manipulação de estado em uma estrutura comum e extensível.
 */
 
 #include "Node.h"
